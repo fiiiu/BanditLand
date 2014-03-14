@@ -13,9 +13,10 @@ class BanditGame(object):
         self.n_trials=n_trials
         self.player_choice=player_choice
         self.bandits=MultiarmedBandit.MultiarmedBandit(p_list)
-        #self.player_select(self.player_choice)
         self.choices=[]
         self.rewards=[]
+        if self.player_choice is not None:
+            self.create_player(self.player_choice)
         
     def reset(self, new_player_choice=None):
         if new_player_choice is not None:
@@ -36,7 +37,7 @@ class BanditGame(object):
     def play(self):
         if self.player_choice is None:
             self.player_select()
-        self.create_player(self.player_choice)
+            self.create_player(self.player_choice)
 
         for i in range(self.n_trials):
             choice=self.player.choose()
@@ -47,16 +48,16 @@ class BanditGame(object):
             self.choices.append(choice)
             self.rewards.append(reward)
 
-        average_reward=float(sum(self.rewards))/self.n_trials
-        #self.report(average_reward)
-        return average_reward
+        return (self.choices, self.rewards)
+        
+    def average_reward(self):
+        return float(sum(self.rewards))/self.n_trials
 
-    
-    def report(self, average_reward):
-        print "Game report:\n"
+    def report(self):
+        print "\nGame report:"
         for i in range(self.n_trials):
             print "Trial {0}: choice={1}, reward={2}".format(i, self.choices[i], self.rewards[i])
-        print "Average reward achieved: {0}".format(average_reward)
+        print "Average reward achieved: {0}".format(self.average_reward())
         
 
 

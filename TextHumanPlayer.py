@@ -10,7 +10,7 @@ class TextHumanPlayer(BanditPlayer.BanditPlayer):
 
     def choose(self):
         choice=int(raw_input('Enter bandit choice (0 to {0}): '.format(self.n_bandits-1)))   
-        self.choices.append(choice) #stupid yet mnemonic!
+        self.choices.append(choice)
         return choice
 
     def update_rewards(self, reward):
