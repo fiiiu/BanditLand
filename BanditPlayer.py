@@ -5,7 +5,6 @@ class BanditPlayer(object):
 
     def __init__(self, n_bandits=len(parameters.p_list)):
         self.n_bandits=n_bandits
-        #self.trials_played=0
         self.choices=[]
         self.rewards=[]
         self.successes=[0]*self.n_bandits
