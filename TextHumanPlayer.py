@@ -1,11 +1,11 @@
 import BanditPlayer
 import parameters
 
-class HumanPlayer(BanditPlayer.BanditPlayer):
+class TextHumanPlayer(BanditPlayer.BanditPlayer):
 
     def __init__(self, n_bandits=len(parameters.p_list)):
 
-        super(HumanPlayer, self).__init__(n_bandits)
+        super(TextHumanPlayer, self).__init__(n_bandits)
         
 
     def choose(self):
@@ -14,6 +14,8 @@ class HumanPlayer(BanditPlayer.BanditPlayer):
         return choice
 
     def update_rewards(self, reward):
+        #show rewards
+        print "Reward this trial: {0}".format(reward)
         #update rewards
         self.rewards.append(reward)
         #update successes/failures of last bandit chosen
