@@ -88,3 +88,15 @@ class GraphicalInterface():
                     if event.key == pygame.K_SPACE:
                         waiting=False
                     
+    def metacognitive_screen(self):
+        metacognitive_screen=self.create_message_screen("MeTaCoGnItIoN! SPACE to continue")
+        self.screen.blit(metacognitive_screen, (0,0))
+        pygame.display.flip()
+        waiting=True
+        while waiting:
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        waiting=False
+        return 4 #fix

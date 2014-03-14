@@ -8,7 +8,8 @@ import numpy
 
 class BanditGame(object):
 
-    def __init__(self, p_list=parameters.p_list, n_trials=parameters.n_trials, player_choice=parameters.player_choice):
+    def __init__(self, p_list=parameters.p_list, n_trials=parameters.n_trials, player_choice=parameters.player_choice,\
+                 metacognition=parameters.metacognition):
         self.p_list=p_list
         self.n_bandits=len(p_list)
         self.n_trials=n_trials
@@ -18,6 +19,7 @@ class BanditGame(object):
         self.rewards=[]
         if self.player_choice is not None:
             self.create_player(self.player_choice)
+        self.metacognition=metacognition
         
     def reset(self, new_player_choice=None):
         if new_player_choice is not None:
@@ -48,6 +50,8 @@ class BanditGame(object):
             #print "Reward obtained: {0}".format(reward)
             self.choices.append(choice)
             self.rewards.append(reward)
+            if self.metacognition and self.player_choice<=0 and i==int((self.n_trials-1)/2):
+                WHATTODOWITHTHIS=self.player.metacognitive_report()
 
         return (self.choices, self.rewards)
         
