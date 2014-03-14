@@ -4,11 +4,12 @@ import SuccessRatePlayer
 import OptimalPlayer
 import playerFactory
 import parameters
-import numpy.random
+import numpy
 
 class BanditGame(object):
 
     def __init__(self, p_list=parameters.p_list, n_trials=parameters.n_trials, player_choice=parameters.player_choice):
+        self.p_list=p_list
         self.n_bandits=len(p_list)
         self.n_trials=n_trials
         self.player_choice=player_choice
@@ -59,7 +60,8 @@ class BanditGame(object):
             print "Trial {0}: choice={1}, reward={2}".format(i, self.choices[i], self.rewards[i])
         print "Average reward achieved: {0}".format(self.average_reward())
         
-
+    def save(self, filename):
+        numpy.savetxt(filename, numpy.array([range(self.n_trials), self.choices, self.rewards]).T, fmt='%d', header="Payoff probabilities: {0}".format(self.p_list))
 
 
 

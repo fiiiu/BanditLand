@@ -22,13 +22,13 @@ def create_player(player_choice):
 
 def player_type(player_choice):
     if player_choice==-1:
-        return "Graphical Human"
+        return "GraphicalHuman"
     if player_choice==0:
-        return "Text Human"
+        return "TextHuman"
     elif player_choice==1:
         return "Random"
     elif player_choice==2:
-        return "Success Rate"
+        return "SuccessRate"
     elif player_choice==3:
         return "Optimal"
 
