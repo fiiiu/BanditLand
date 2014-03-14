@@ -9,7 +9,7 @@ import numpy
 class BanditGame(object):
 
     def __init__(self, p_list=parameters.p_list, n_trials=parameters.n_trials, player_choice=parameters.player_choice,\
-                 metacognition=parameters.metacognition):
+                 metacognition=False):
         self.p_list=p_list
         self.n_bandits=len(p_list)
         self.n_trials=n_trials
@@ -51,7 +51,7 @@ class BanditGame(object):
             self.choices.append(choice)
             self.rewards.append(reward)
             if self.metacognition and self.player_choice<=0 and i==int((self.n_trials-1)/2):
-                WHATTODOWITHTHIS=self.player.metacognitive_report()
+                report=self.player.metacognitive_report()
 
         return (self.choices, self.rewards)
         

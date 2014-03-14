@@ -35,10 +35,13 @@ class BanditExperiment():
             sort_order=numpy.random.permutation(range(2*n_blocks))
             self.conditions=conditions[sort_order]
             self.doubled_payrates=doubled_payrates[sort_order]
+            block_numbers=numpy.array(range(n_blocks)+range(n_blocks))
+            self.block_numbers=block_numbers[sort_order]
         else:
             self.conditions=["plain"*self.n_blocks]
             sort_order=numpy.random.permutation(range(n_blocks))
             self.payrates=self.payrates[sort_order]
+            self.block_numbers=range(n_blocks)
             
         #graphical interface
         self.graphical_interface=graphical_interface
@@ -51,7 +54,9 @@ class BanditExperiment():
             self.subject=playerFactory.player_type(model)
             self.run_model(model)
         else:
-            if self.graphical_interface:
+            if self.metacognition:
+                self.run_metacognition()
+            elif self.graphical_interface:
                 self.run_graphical()
             else:
                 self.run_text()
@@ -87,16 +92,13 @@ class BanditExperiment():
             self.games[-1].play()
             self.interface.end_block()
 
-
-
-
     def report(self):
         for game in self.games:
             game.report()
 
     def save(self):
         for i,game in enumerate(self.games):
-            game.save("Output/block_{0}_{1}_{2}.txt".format(self.subject, i, self.conditions[i]))
+            game.save("Output/block_{0}_{1}_{2}.txt".format(self.subject, self.block_numbers[i], self.conditions[i]))
 
     def save_payrates(self):
         numpy.savetxt("Input/payrates_{0}Ban_{1}Blo_{2}Tri.txt".format(self.n_bandits, self.n_blocks, self.n_trials), self.payrates)
