@@ -20,7 +20,8 @@ class BanditGame(object):
         if self.player_choice is not None:
             self.create_player(self.player_choice)
         self.metacognition=metacognition
-        
+        self.metacognitive_report=None
+
     def reset(self, new_player_choice=None):
         if new_player_choice is not None:
             self.player_choice=new_player_choice
@@ -51,7 +52,7 @@ class BanditGame(object):
             self.choices.append(choice)
             self.rewards.append(reward)
             if self.metacognition and self.player_choice<=0 and i==int((self.n_trials-1)/2):
-                report=self.player.metacognitive_report()
+                self.metacognitive_report=self.player.metacognitive_report()
 
         return (self.choices, self.rewards)
         
@@ -65,7 +66,8 @@ class BanditGame(object):
         print "Average reward achieved: {0}".format(self.average_reward())
         
     def save(self, filename):
-        numpy.savetxt(filename, numpy.array([range(self.n_trials), self.choices, self.rewards]).T, fmt='%d', header="Payoff probabilities: {0}".format(self.p_list))
+        numpy.savetxt(filename, numpy.array([range(self.n_trials), self.choices, self.rewards]).T,\
+                      fmt='%d', header="Payoff probabilities: {0}\nMetacognitive Report: {1}".format(self.p_list, self.metacognitive_report))
 
 
 
