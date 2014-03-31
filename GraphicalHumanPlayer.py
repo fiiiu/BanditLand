@@ -26,6 +26,6 @@ class GraphicalHumanPlayer(BanditPlayer.BanditPlayer):
         elif reward==0:
             self.failures[self.choices[-1]]+=1
        
-    def metacognitive_report(self):
-        metacognitive_report=self.interface.metacognitive_screen()
+    def metacognitive_report(self, report_type):
+        metacognitive_report=self.interface.metacognitive_screen(report_type)
         return metacognitive_report

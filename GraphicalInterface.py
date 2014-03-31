@@ -88,21 +88,40 @@ class GraphicalInterface():
                     if event.key == pygame.K_SPACE:
                         waiting=False
                     
-    def metacognitive_screen(self):
-        metacognitive_screen=self.create_message_screen("MeTaCoGnItIoN! UP/DOWN to report")
-        self.screen.blit(metacognitive_screen, (0,0))
-        pygame.display.flip()
-        waiting=True
-        while waiting:
-            events = pygame.event.get()
-            for event in events:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        report=1
-                        waiting=False
-                    if event.key == pygame.K_DOWN:
-                        report=0
-                        waiting=False
-        return report
+    def metacognitive_screen(self, report_type):
+        if report_type==0:
+            return None
+        elif report_type==1:
+            metacognitive_screen=self.create_message_screen("MeTaCoGnItIoN! Left/Right to report")
+            self.screen.blit(metacognitive_screen, (0,0))
+            pygame.display.flip()
+            waiting=True
+            while waiting:
+                events = pygame.event.get()
+                for event in events:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_LEFT:
+                            report=0
+                            waiting=False
+                        if event.key == pygame.K_RIGHT:
+                            report=1
+                            waiting=False
+            return report
+        elif report_type==2:
+            metacognitive_screen=self.create_message_screen("MeTaCoGnItIoN! Left/Right to report")
+            self.screen.blit(metacognitive_screen, (0,0))
+            pygame.display.flip()
+            waiting=True
+            while waiting:
+                events = pygame.event.get()
+                for event in events:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_LEFT:
+                            report=0
+                            waiting=False
+                        if event.key == pygame.K_RIGHT:
+                            report=1
+                            waiting=False
+            return report
 
         
