@@ -68,7 +68,8 @@ class BanditGame(object):
         
     def save(self, filename):
         numpy.savetxt(filename, numpy.array([range(self.n_trials), self.choices, self.rewards]).T,\
-                      fmt='%d', header="Payoff probabilities: {0}\nMetacognitive Report: {1}".format(self.p_list, self.metacognitive_report))
+                      fmt='%d', header="Payoff probabilities: {0}\nMetacognitive report type: {1}\nMetacognitive report: {2}"\
+                      .format(self.p_list, self.metacognition, self.metacognitive_report))
 
 
 

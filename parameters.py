@@ -1,13 +1,13 @@
 import numpy
 
 p_list=[0.35, 0.3]
-n_trials=10
+n_trials=2
 player_choice=None
 
 #Experiment parameters
 #metacognitive report: 'sorted' (0,1,2,3,..) for testing; 'random' for experiment, ..
 block_ordering='sorted'
-include_conditions=[0,1]
+include_conditions=[0,1,2]
 graphical_interface=True
 n_bandits=2
 blocks_per_condition=1
@@ -18,7 +18,8 @@ experiment_beta=1
 
 #Graphical Interface
 bandit_width=0.1
-bandit_height=0.2
+bandit_height=0.15
 progress_width=0.5
-progress_height=0.05
-reward_size=0.01
+progress_height=0.02
+confidence_height=0.05
+reward_size=0.015

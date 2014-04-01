@@ -39,20 +39,6 @@ class BanditExperiment():
         self.conditions=ordered_conditions[sort_order]
         self.payrates=expanded_payrates[sort_order]
 
-        # if block_ordering=='random':
-        #     conditions=numpy.array([0]*self.blocks_per_condition+[1]*self.blocks_per_condition)
-        #     doubled_payrates=numpy.concatenate([self.payrates, self.payrates])
-        #     sort_order=numpy.random.permutation(range(2*n_blocks))
-        #     self.conditions=conditions[sort_order]
-        #     self.doubled_payrates=doubled_payrates[sort_order]
-        #     block_numbers=numpy.array(range(n_blocks)+range(n_blocks))
-        #     self.block_numbers=block_numbers[sort_order]
-        # elif block_ordering=='sorted':
-        #     self.conditions=[0*self.n_blocks]
-        #     sort_order=numpy.random.permutation(range(n_blocks))
-        #     self.payrates=self.payrates[sort_order]
-        #     self.block_numbers=range(n_blocks)
-            
         #graphical interface
         self.graphical_interface=graphical_interface
         if graphical_interface:
@@ -107,14 +93,18 @@ class BanditExperiment():
             game.report()
 
     def save(self):
-        #numpy.savetxt("Output/{0}_REPORT.txt".format(self.subject),\
-        #                numpy.array([range(self.n_blocks), self.conditions, self.payrates]).T, fmt='%d')
-        save_array=numpy.zeros((self.n_blocks, 2+self.payrates.shape[1]), dtype=float)
+        # save_array=numpy.zeros((self.n_blocks, 3+self.payrates.shape[1]), dtype=float)
+        # for i in range(self.n_blocks):
+        #     save_array[i][0]=i
+        #     save_array[i][1]=self.conditions[i]
+        #     save_array[i][2]=self.payrates[i]
+        #     save_array[i][3]=self.games[i].metacognitive_report
+        # numpy.savetxt("Output/{0}_REPORT.txt".format(self.subject),save_array, fmt='%d %d{0}'.format(' %f'*self.payrates.shape[1]))
+
+        save_file=open("Output/{0}_REPORT.txt".format(self.subject),'w')
         for i in range(self.n_blocks):
-            save_array[i][0]=i
-            save_array[i][1]=self.conditions[i]
-            save_array[i][2:]=self.payrates[i]
-        numpy.savetxt("Output/{0}_REPORT.txt".format(self.subject),save_array, fmt='%d %d{0}'.format(' %f'*self.payrates.shape[1]))
+            save_file.write("{0} {1} {2} {3}\n".format(i, self.conditions[i], self.payrates[i], self.games[i].metacognitive_report))
+        save_file.close()
 
         for i,game in enumerate(self.games):
             game.save("Output/{0}_{1}.txt".format(self.subject, range(self.n_blocks)[i]))
