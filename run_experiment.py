@@ -7,8 +7,8 @@ import BanditExperiment
 be=BanditExperiment.BanditExperiment('alejo')
 
 be.run()
-be.save()
-
+be.save() 
+ 
 #be.run(1)
 #be.save()
 

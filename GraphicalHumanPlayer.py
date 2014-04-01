@@ -11,13 +11,13 @@ class GraphicalHumanPlayer(BanditPlayer.BanditPlayer):
         self.interface=graphical_interface
 
     def choose(self):
-        choice=self.interface.choice_screen()
+        choice=self.interface.show_choice_screen()
         self.choices.append(choice)
         return choice
 
     def update_rewards(self, reward):
         #show rewards
-        self.interface.feedback_screen(reward)
+        self.interface.show_feedback_screen(self.choices[-1],reward)
         #update rewards
         self.rewards.append(reward)
         #update successes/failures of last bandit chosen
@@ -25,7 +25,8 @@ class GraphicalHumanPlayer(BanditPlayer.BanditPlayer):
             self.successes[self.choices[-1]]+=1
         elif reward==0:
             self.failures[self.choices[-1]]+=1
+        self.interface.set_progress(sum(self.successes))
        
     def metacognitive_report(self, report_type):
-        metacognitive_report=self.interface.metacognitive_screen(report_type)
+        metacognitive_report=self.interface.show_metacognitive_screen(report_type)
         return metacognitive_report
