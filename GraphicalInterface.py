@@ -18,7 +18,7 @@ class GraphicalInterface():
     def create_static_screens(self):
         self.blockstart_screen=self.create_message_screen("Press SPACE to start block...")
         self.blockend_screen=self.create_message_screen("Ending block... Press SPACE to continue")
-        self.trial_screen=self.create_trial_progress_screen(0)
+        self.trial_screen=self.create_trial_progress_screen(0,0)
         self.reward_screens=[]
         for i in range(parameters.n_bandits):
             self.reward_screens.append([])
@@ -67,19 +67,25 @@ class GraphicalInterface():
         return trial_screen
 
 
-    def create_trial_progress_screen(self, progress):
+    def create_trial_progress_screen(self, played, won):
         trial_progress_screen=self.create_trial_screen()
 
         outline_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8, \
                                  self.screen.get_width()*parameters.progress_width, \
                                  self.screen.get_height()*parameters.progress_height)
 
+        trialnum_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
+                                  float(played)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
+                                  self.screen.get_height()*parameters.progress_height)
+                
+
         # SUCIO LEER ACA DE PARAMETERS N_TRIALS!!!!
         progress_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
-                                  float(progress)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
+                                  float(won)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
                                   self.screen.get_height()*parameters.progress_height)
                 
         self.outline=pygame.draw.rect(trial_progress_screen, (40,40,40), outline_rect)
+        self.trialnum=pygame.draw.rect(trial_progress_screen, (0,100,0), trialnum_rect)
         self.progress=pygame.draw.rect(trial_progress_screen, (0,255,0), progress_rect)
         
         return trial_progress_screen
@@ -142,7 +148,7 @@ class GraphicalInterface():
 
 
     def start_block(self, i):
-        self.set_progress(0)
+        self.set_progress(0,0)
         self.screen.blit(self.blockstart_screen, (0,0))
         pygame.display.flip()
         waiting=True
@@ -290,8 +296,8 @@ class GraphicalInterface():
             return (report, confidence)
 
 
-    def set_progress(self, progress):
-        self.trial_screen=self.create_trial_progress_screen(progress)
+    def set_progress(self, played, won):
+        self.trial_screen=self.create_trial_progress_screen(played, won)
         
 
 

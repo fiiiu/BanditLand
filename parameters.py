@@ -1,7 +1,7 @@
 import numpy
 
 p_list=[0.35, 0.3]
-n_trials=2
+n_trials=4
 player_choice=None
 
 #Experiment parameters

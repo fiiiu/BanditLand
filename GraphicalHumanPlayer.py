@@ -25,7 +25,7 @@ class GraphicalHumanPlayer(BanditPlayer.BanditPlayer):
             self.successes[self.choices[-1]]+=1
         elif reward==0:
             self.failures[self.choices[-1]]+=1
-        self.interface.set_progress(sum(self.successes))
+        self.interface.set_progress(len(self.choices),sum(self.successes))
        
     def metacognitive_report(self, report_type):
         metacognitive_report=self.interface.show_metacognitive_screen(report_type)
