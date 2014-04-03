@@ -9,15 +9,19 @@ class GraphicalInterface():
 
     def __init__(self):
         pygame.init()
-        size=width, height=800, 600
-        self.screen=pygame.display.set_mode(size)
-        #self.screen=pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        if parameters.fullscreen:
+            self.screen=pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+            #pygame.mouse.set_visible(False)
+        else:
+            size=width, height=800, 600
+            self.screen=pygame.display.set_mode(size)
         self.create_static_screens()
 
     
     def create_static_screens(self):
-        self.blockstart_screen=self.create_message_screen("Press SPACE to start block...")
-        self.blockend_screen=self.create_message_screen("Ending block... Press SPACE to continue")
+        self.preblockstart_screen=self.create_message_screen('Calculando probabilidades de pago...')
+        self.blockstart_screen=self.create_message_screen('Barra o click para comenzar el bloque...')
+        #self.blockend_screen=self.create_blockend_screen()
         self.trial_screen=self.create_trial_progress_screen(0,0)
         self.reward_screens=[]
         for i in range(parameters.n_bandits):
@@ -38,10 +42,13 @@ class GraphicalInterface():
         message_screen.blit(message_text, message_textpos)
         return message_screen
 
-    def create_trial_screen(self):
+    def create_trial_screen(self, light_background=False):
         trial_screen=pygame.Surface(self.screen.get_size())
         trial_screen=trial_screen.convert()
-        trial_screen.fill((20, 20, 20))
+        if light_background:
+            trial_screen.fill((120,120,120))
+        else:   
+            trial_screen.fill((20, 20, 20))
         
         font=pygame.font.Font(None, 36)
         trial_text_A=font.render('A', 1, (210, 210, 210))
@@ -96,22 +103,28 @@ class GraphicalInterface():
         if report_type == 0:
             return None
         elif report_type == 1:
-            metacognitive_screen=self.create_trial_screen()
+            metacognitive_screen=self.create_trial_screen(light_background=True)
             font=pygame.font.Font(None, 36)
-            metacog_text=font.render(u'¿Qué máquina paga más?', 1, (210, 210, 210))
-            metacog_textpos=metacog_text.get_rect(centerx=metacognitive_screen.get_width()/2, centery=1*metacognitive_screen.get_height()/4)
+            #title_text=font.render(u'Rep', 1, (210,210,210))
+            #title_textpos=title_text.get_rect(centerx=self.screen.get_width()/2, centery=0.1*self.screen.get_height())
+            #metacognitive_screen.blit(title_text, title_textpos)
+            metacog_text=font.render(u'¿Qué máquina paga más?', 1, (20,20,20))#(210, 210, 210))
+            metacog_textpos=metacog_text.get_rect(centerx=metacognitive_screen.get_width()/2, centery=0.2*metacognitive_screen.get_height())
             metacognitive_screen.blit(metacog_text, metacog_textpos)        
             return metacognitive_screen
         elif report_type == 2:
-            metacognitive_screen=self.create_trial_screen()
+            metacognitive_screen=self.create_trial_screen(light_background=True)
             font=pygame.font.Font(None, 36)
-            metacog_text=font.render(u'¿Qué máquina paga más?', 1, (210, 210, 210))
-            metacog_textpos=metacog_text.get_rect(centerx=metacognitive_screen.get_width()/2, centery=0.3*metacognitive_screen.get_height())
+            #title_text=font.render(u'Reporte metacognitivo', 1, (210,210,210))
+            #title_textpos=title_text.get_rect(centerx=self.screen.get_width()/2, centery=0.1*self.screen.get_height())
+            #metacognitive_screen.blit(title_text, title_textpos)
+            metacog_text=font.render(u'¿Qué máquina paga más?', 1, (20,20,20))
+            metacog_textpos=metacog_text.get_rect(centerx=metacognitive_screen.get_width()/2, centery=0.2*metacognitive_screen.get_height())
             metacognitive_screen.blit(metacog_text, metacog_textpos)        
-            metacog_text_conf=font.render(u'¿Con qué grado de seguridad?', 1, (210, 210, 210))
+            metacog_text_conf=font.render(u'¿Con qué grado de seguridad?', 1, (20,20,20))
             metacog_textpos_conf=metacog_text_conf.get_rect(centerx=metacognitive_screen.get_width()/2, centery=0.7*metacognitive_screen.get_height())
-            metacog_text_conf_a=font.render(u'alto', 1, (210, 210, 210))
-            metacog_text_conf_b=font.render(u'bajo', 1, (210, 210, 210))
+            metacog_text_conf_a=font.render(u'alto', 1, (20,20,20))
+            metacog_text_conf_b=font.render(u'bajo', 1, (20,20,20))
             metacog_textpos_conf_a=metacog_text_conf_a.get_rect(centerx=self.screen.get_width()*(0.25+parameters.progress_width)+40, \
                                                                 centery=0.8*metacognitive_screen.get_height())
             metacog_textpos_conf_b=metacog_text_conf_b.get_rect(centerx=self.screen.get_width()/4-40, \
@@ -145,9 +158,32 @@ class GraphicalInterface():
 
         return reward_screen
 
+        
+    def create_blockend_screen(self, played, won):
+        blockend_screen=self.create_message_screen("Bloque terminado. Barra o click para continuar.")    
+        outline_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8, \
+                                 self.screen.get_width()*parameters.progress_width, \
+                                 self.screen.get_height()*parameters.progress_height)
+
+        trialnum_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
+                                  float(played)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
+                                  self.screen.get_height()*parameters.progress_height)
+                
+        # SUCIO LEER ACA DE PARAMETERS N_TRIALS!!!!
+        progress_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
+                                  float(won)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
+                                  self.screen.get_height()*parameters.progress_height)
+                
+        self.outline=pygame.draw.rect(blockend_screen, (40,40,40), outline_rect)
+        self.trialnum=pygame.draw.rect(blockend_screen, (0,100,0), trialnum_rect)
+        self.progress=pygame.draw.rect(blockend_screen, (0,255,0), progress_rect)
+        return blockend_screen
 
 
     def start_block(self, i):
+        self.screen.blit(self.preblockstart_screen, (0,0))
+        pygame.display.flip()
+        pygame.time.delay(800)
         self.set_progress(0,0)
         self.screen.blit(self.blockstart_screen, (0,0))
         pygame.display.flip()
@@ -157,6 +193,9 @@ class GraphicalInterface():
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
+                        waiting=False
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
                         waiting=False
 
     def end_block(self):
@@ -168,6 +207,9 @@ class GraphicalInterface():
             for event in events:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
+                        waiting=False
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
                         waiting=False
 
     def show_choice_screen(self):
@@ -277,6 +319,8 @@ class GraphicalInterface():
             pygame.display.flip()
 
             waiting_confidence=True
+            displacement=0
+            max_displacement=5
             while waiting_confidence:
                 events = pygame.event.get()
                 for event in events:
@@ -286,19 +330,66 @@ class GraphicalInterface():
                             if self.bar.collidepoint(pos):
                                 confidence=float(pos[0]-self.bar.left)/self.bar.width
                                 waiting_confidence=False
-
-            temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
+                                 self.screen.get_width()*parameters.progress_width, \
+                                 self.screen.get_height()*parameters.confidence_height)
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
                                                   (pos[0]-5, self.bar.top, 10, self.bar.height))         
-            self.screen.blit(self.metacognitive_screens[report_type], (0,0))
-            pygame.display.flip()
-            pygame.time.delay(200)
+                                self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+                                pygame.display.flip()
+                                pygame.time.delay(200)
+            
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                            displacement+=int(event.key==pygame.K_RIGHT)*2-1
+                            if displacement > max_displacement:
+                                displacement-=1
+                            if displacement < -max_displacement:
+                                displacement+=1
+                            visual_displacement=displacement*float(self.bar.width)/2/max_displacement
+                            
+                            if displacement==max_displacement:
+                                confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
+                                 self.screen.get_width()*parameters.progress_width, \
+                                 self.screen.get_height()*parameters.confidence_height)
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                                  (self.bar.centerx-5+visual_displacement, self.bar.top, 5, self.bar.height))
+                                self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+                                pygame.display.flip()
+                            elif displacement==-max_displacement:
+                                confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
+                                 self.screen.get_width()*parameters.progress_width, \
+                                 self.screen.get_height()*parameters.confidence_height)
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                                  (self.bar.centerx+visual_displacement, self.bar.top, 5, self.bar.height))
+                                self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+                                pygame.display.flip()
+                            else:
+                                confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
+                                 self.screen.get_width()*parameters.progress_width, \
+                                 self.screen.get_height()*parameters.confidence_height)
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                                  (self.bar.centerx-5+visual_displacement, self.bar.top, 10, self.bar.height))
+                                self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+                                pygame.display.flip()
+                        if event.key == pygame.K_SPACE:
+                            confidence=displacement+max_displacement/2*max_displacement
+                            waiting_confidence=False
+
+
             self.metacognitive_screens[report_type]=self.create_metacognitive_screen(report_type)
             return (report, confidence)
 
 
     def set_progress(self, played, won):
-        self.trial_screen=self.create_trial_progress_screen(played, won)
-        
+        if played<parameters.n_trials:
+            self.trial_screen=self.create_trial_progress_screen(played, won)
+        else:
+            self.blockend_screen=self.create_blockend_screen(played,won)
 
 
         
