@@ -4,7 +4,7 @@ import BanditExperiment
 
 
 # be=BanditExperiment.BanditExperiment('alejo', payrates='load')
-be=BanditExperiment.BanditExperiment('joa')
+be=BanditExperiment.BanditExperiment('juli')
 
 be.run()
 be.save() 

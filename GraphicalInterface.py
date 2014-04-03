@@ -68,6 +68,22 @@ class GraphicalInterface():
         second_bandit_rect=pygame.Rect(second_bandit_left, second_bandit_top, \
                                 self.screen.get_width()*parameters.bandit_width, self.screen.get_height()*parameters.bandit_height)
         
+        first_arm=pygame.draw.polygon(trial_screen, (150,150,0), [(first_bandit_rect.right, first_bandit_rect.centery),\
+                                                                  (first_bandit_rect.right+30, first_bandit_rect.centery),\
+                                                                  (first_bandit_rect.right+30, first_bandit_rect.top+10),\
+                                                                  (first_bandit_rect.right+20, first_bandit_rect.top+10),\
+                                                                  (first_bandit_rect.right+20, first_bandit_rect.centery-10),\
+                                                                  (first_bandit_rect.right, first_bandit_rect.centery-10)])
+        first_ball=pygame.draw.circle(trial_screen, (150,150,0), (first_bandit_rect.right+25, first_bandit_rect.top+10), 10)
+                                               
+        second_arm=pygame.draw.polygon(trial_screen, (150,150,0), [(second_bandit_rect.right, second_bandit_rect.centery),\
+                                                                  (second_bandit_rect.right+30, second_bandit_rect.centery),\
+                                                                  (second_bandit_rect.right+30, second_bandit_rect.top+10),\
+                                                                  (second_bandit_rect.right+20, second_bandit_rect.top+10),\
+                                                                  (second_bandit_rect.right+20, second_bandit_rect.centery-10),\
+                                                                  (second_bandit_rect.right, second_bandit_rect.centery-10)])
+        second_ball=pygame.draw.circle(trial_screen, (150,150,0), (second_bandit_rect.right+25, second_bandit_rect.top+10), 10)
+
         self.first_bandit=pygame.draw.rect(trial_screen, (255,0,0), first_bandit_rect)
         self.second_bandit=pygame.draw.rect(trial_screen, (0,0,255), second_bandit_rect)
         
