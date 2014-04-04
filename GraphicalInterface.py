@@ -393,7 +393,7 @@ class GraphicalInterface():
                                 self.screen.blit(self.metacognitive_screens[report_type], (0,0))
                                 pygame.display.flip()
                         if event.key == pygame.K_SPACE:
-                            confidence=displacement+max_displacement/2*max_displacement
+                            confidence=float(displacement+max_displacement)/(2*max_displacement)
                             waiting_confidence=False
 
 
