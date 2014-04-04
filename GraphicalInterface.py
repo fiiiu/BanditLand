@@ -121,9 +121,6 @@ class GraphicalInterface():
         elif report_type == 1:
             metacognitive_screen=self.create_trial_screen(light_background=True)
             font=pygame.font.Font(None, 36)
-            #title_text=font.render(u'Rep', 1, (210,210,210))
-            #title_textpos=title_text.get_rect(centerx=self.screen.get_width()/2, centery=0.1*self.screen.get_height())
-            #metacognitive_screen.blit(title_text, title_textpos)
             metacog_text=font.render(u'¿Qué máquina paga más?', 1, (20,20,20))#(210, 210, 210))
             metacog_textpos=metacog_text.get_rect(centerx=metacognitive_screen.get_width()/2, centery=0.2*metacognitive_screen.get_height())
             metacognitive_screen.blit(metacog_text, metacog_textpos)        
@@ -131,9 +128,6 @@ class GraphicalInterface():
         elif report_type == 2:
             metacognitive_screen=self.create_trial_screen(light_background=True)
             font=pygame.font.Font(None, 36)
-            #title_text=font.render(u'Reporte metacognitivo', 1, (210,210,210))
-            #title_textpos=title_text.get_rect(centerx=self.screen.get_width()/2, centery=0.1*self.screen.get_height())
-            #metacognitive_screen.blit(title_text, title_textpos)
             metacog_text=font.render(u'¿Qué máquina paga más?', 1, (20,20,20))
             metacog_textpos=metacog_text.get_rect(centerx=metacognitive_screen.get_width()/2, centery=0.2*metacognitive_screen.get_height())
             metacognitive_screen.blit(metacog_text, metacog_textpos)        
