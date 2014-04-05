@@ -14,29 +14,47 @@ class GraphicalInterface():
             #pygame.mouse.set_visible(False)
         #else:
         size=width, height=800, 600
-        self.screen=pygame.display.set_mode(size)
+        self.window=pygame.display.set_mode(size)
         #self.create_static_screens()
 
-        self.bs=BanditSprite(width,height)
+        window_rect=self.window.get_rect()
+        first_bandit_left=int(window_rect.width/4-window_rect.width*parameters.bandit_width/2)
+        first_bandit_top=int(window_rect.height/4+window_rect.height*parameters.bandit_height/2)     
+        self.bs=BanditSprite(self.window.get_rect(), (first_bandit_left, first_bandit_top))
+
+        self.group=pygame.sprite.LayeredDirty()
+        self.group.add(self.bs)
+        print "draw"
+        self.group.draw(self.window)
+        i=0
+        while i < 5:
+            pygame.display.flip()
+            i+=1
+
+        pygame.time.delay(1000) 
 
 
 
 
-class BanditSprite(pygame.sprite.Sprite):
+
+class BanditSprite(pygame.sprite.DirtySprite):
     
-    def __init__(self, screen_width, screen_height):
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, window_rect, pos):
+        print pos
+        pygame.sprite.DirtySprite.__init__(self)
 
 
-        self.image = pygame.Surface([parameters.bandit_width, parameters.bandit_height])
+        size=[int(parameters.bandit_width*window_rect.width), int(parameters.bandit_height*window_rect.height)]
+        self.image = pygame.Surface(size)
+   
+        self.rect=pygame.Rect(pos, size)
 
-        first_bandit_left=screen_width()/4-screen_width()*parameters.bandit_width/2
-        first_bandit_top=screen_height()/4+screen_height()*parameters.bandit_height/2        
-        
-        first_bandit_rect=pygame.Rect(first_bandit_left, first_bandit_top, \
-                                screen_width()*parameters.bandit_width, screen_height()*parameters.bandit_height)
+        pygame.draw.rect(self.image, (255,0,0), self.rect)
 
-        self.first_bandit=pygame.draw.rect(self.image, (255,0,0), first_bandit_rect)
+        pygame.draw.circle(self.image, (150,150,0), pos, 10)
+
+        self.dirty=1
+        self.visible=1
 
 
 
