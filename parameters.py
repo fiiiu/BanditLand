@@ -18,9 +18,9 @@ experiment_beta=1
 
 #Graphical Interface
 fullscreen=False
-bandit_width=0.08
-bandit_height=0.18
+bandit_width=0.2
+bandit_height=0.24
 progress_width=0.5
 progress_height=0.02
 confidence_height=0.05
-reward_size=0.015
+reward_size=0.1
