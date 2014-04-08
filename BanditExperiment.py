@@ -1,5 +1,5 @@
 
-import GraphicalInterface
+import NEWGraphicalInterface
 import BanditGame
 import playerFactory
 import parameters
@@ -42,7 +42,7 @@ class BanditExperiment():
         #graphical interface
         self.graphical_interface=graphical_interface
         if graphical_interface:
-            self.interface=GraphicalInterface.GraphicalInterface()
+            self.interface=NEWGraphicalInterface.GraphicalInterface()
             
     def run(self, model=None):
         self.games=[]

@@ -22,6 +22,7 @@ class GraphicalInterface():
 
     def create_screens(self):
         self.trial_screen=TrialScreen(self.bandits, self.progress_bar)
+        self.metacognitive_screen=MetacognitiveScreen(self.bandits, 1, self.first_question)
 
     def create_visual_elements(self):
         window_rect=self.window.get_rect()
@@ -29,6 +30,10 @@ class GraphicalInterface():
         self.bandits=self.create_bandits()
         self.progress_bar=ProgressBar((window_rect.width*parameters.progress_width, window_rect.height*parameters.progress_height),\
                                         (window_rect.width*0.25, window_rect.height*0.125))
+
+        self.first_question=MessageSprite(u'¿Qué máquina paga más?', (int(window_rect.width*0.5), int(window_rect.height*0.2)))
+
+
 
     def create_bandits(self):
         window_rect=self.window.get_rect()
@@ -59,6 +64,27 @@ class GraphicalInterface():
         # self.trial_screen.draw(self.window)
         # pygame.display.flip()
         pygame.time.delay(1000) 
+
+    def start_block(self, a):
+        pass
+
+    def end_block(self):
+        pass
+
+
+    def set_progress(self, played, won):
+        self.progress_bar.update(played, won)        
+
+        # if played<parameters.n_trials:
+        #     self.trial_screen=self.create_trial_progress_screen(played, won)
+        # else:
+        #     self.blockend_screen=self.create_blockend_screen(played,won)
+
+
+    def show_metacognitive_screen(self, a):
+        self.metacognitive_screen.draw(self.window)
+        pygame.display.flip()
+        pygame.time.delay(1000)
 
 
     def show_choice_screen(self):
@@ -91,29 +117,48 @@ class GraphicalInterface():
                         elif event.key == pygame.K_RIGHT:
                             choice=1
                             waiting=False
-
             return choice
 
 
     def show_feedback_screen(self, choice, reward):
-        #self.screen.blit(self.reward_screens[choice][reward], (0,0))
-        self.bandits[choice].update(reward)
+        self.bandits[choice].reward(reward)
         self.trial_screen.draw(self.window)
         pygame.display.flip()
         pygame.time.delay(300)
+        self.bandits[choice].clear()
+        self.trial_screen.draw(self.window)
+        pygame.display.flip()
+        
 
 
 ### SCREENS
 
 class TrialScreen(pygame.sprite.LayeredDirty):
+    def __init__(self, bandits, progress_bar):
+        pygame.sprite.LayeredDirty.__init__(self)
+        self.add(bandits, progress_bar)
 
-        def __init__(self, bandits, progress_bar):
-            pygame.sprite.LayeredDirty.__init__(self)
+class MetacognitiveScreen(pygame.sprite.LayeredDirty):
+    def __init__(self, bandits, metacog_type, messages):
+        pygame.sprite.LayeredDirty.__init__(self)
+        self.add(bandits)
+        self.add(messages)
 
-            self.add(bandits, progress_bar)
+
+
 
 
 ### SPRITES
+
+class MessageSprite(pygame.sprite.DirtySprite):
+
+    def __init__(self, message, pos):
+        font=pygame.font.Font(None, 36)
+        self.text=font.render(message, 1, (20,20,20))
+        self.dirty=1
+        #?#metacognitive_screen.blit(metacog_text, metacog_textpos) 
+
+        
 
 class BanditSprite(pygame.sprite.DirtySprite):
     
@@ -125,7 +170,8 @@ class BanditSprite(pygame.sprite.DirtySprite):
         #self.image = self.image.convert_alpha()
         width,height=size
       
-        self.body=pygame.draw.rect(self.image, color, (0,0,0.6*width, height))
+        self.color=color
+        self.body=pygame.draw.rect(self.image, self.color, (0,0,0.6*width, height))
         pygame.draw.polygon(self.image, (150,150,0), [(self.body.right, self.body.centery),\
                                                                    (self.body.right+0.2*width, self.body.centery),\
                                                                    (self.body.right+0.2*width, self.body.top+0.05*height),\
@@ -141,10 +187,6 @@ class BanditSprite(pygame.sprite.DirtySprite):
         #looking at whole rect now, adjust this to body+arm
         return self.rect.collidepoint(pos)
 
-
-    def update(self, reward):
-        self.reward(reward)
-
     def reward(self, won):
         if won==1:
             pygame.draw.circle(self.image, (255,255,0), (int(self.body.centerx), int(self.body.bottom-2*parameters.reward_size*self.rect.width)),\
@@ -154,6 +196,17 @@ class BanditSprite(pygame.sprite.DirtySprite):
             pygame.draw.circle(self.image, (0,0,0), (int(self.body.centerx), int(self.body.bottom-2*parameters.reward_size*self.rect.width)),\
                                                    int(self.rect.width*parameters.reward_size))
         self.dirty=1
+
+    def selected(self):
+        self.body=pygame.draw.rect(self.image, (255,255,255), (0,0,0.6*self.rect.width, self.rect.height))
+        self.dirty=1
+
+    def clear(self):
+        self.body=pygame.draw.rect(self.image, self.color, (0,0,0.6*self.rect.width, self.rect.height))
+        self.dirty=1
+
+
+
 
 
 
@@ -172,6 +225,8 @@ class ProgressBar(pygame.sprite.LayeredDirty):
         self.trialnum.update(trial_width)
         progress_width=int(self.outline.rect.width*float(won)/parameters.n_trials)
         self.progress.update(progress_width)
+
+
 
 
 class Bar(pygame.sprite.DirtySprite):

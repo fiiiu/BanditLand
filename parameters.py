@@ -7,7 +7,7 @@ player_choice=None
 #Experiment parameters
 #metacognitive report: 'sorted' (0,1,2,3,..) for testing; 'random' for experiment, ..
 block_ordering='ordered'
-include_conditions=[1,2]
+include_conditions=[1]#1,2]
 graphical_interface=True
 n_bandits=2
 blocks_per_condition=2
