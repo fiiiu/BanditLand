@@ -29,8 +29,10 @@ class GraphicalInterface():
             for j in range(2):
                 self.reward_screens[i].append(self.create_reward_screen(i,j))
         self.metacognitive_screens={}
-        for condition in parameters.include_conditions:
+        #for condition in parameters.include_conditions:
+        for condition in range(1,3):
             self.metacognitive_screens[condition]=self.create_metacognitive_screen(condition)
+        self.premetacog_screen,self.premetacog2_screen=self.create_premetacognitive_screens()
 
     def create_message_screen(self, text):
         message_screen=pygame.Surface(self.screen.get_size())
@@ -112,6 +114,32 @@ class GraphicalInterface():
         self.progress=pygame.draw.rect(trial_progress_screen, (0,255,0), progress_rect)
         
         return trial_progress_screen
+
+    def create_premetacognitive_screens(self):
+        premetacog_screen=pygame.Surface(self.screen.get_size())
+        premetacog_screen=premetacog_screen.convert()
+        premetacog_screen.fill((120,120,120))
+        font=pygame.font.Font(None, 36)
+        premetacog_text=font.render(u'¿Qué máquina paga más?', 1, (20,20,20))#(210, 210, 210))
+        premetacog_textpos=premetacog_text.get_rect(centerx=premetacog_screen.get_width()/2, centery=0.2*premetacog_screen.get_height())
+        premetacog_screen.blit(premetacog_text, premetacog_textpos)        
+        
+        premetacog2_screen=self.create_trial_screen(light_background=True)
+        font=pygame.font.Font(None, 36)
+        premetacog2_screen.blit(premetacog_text, premetacog_textpos)        
+        premetacog2_text_conf=font.render(u'¿Con qué grado de seguridad?', 1, (20,20,20))
+        premetacog2_textpos_conf=premetacog2_text_conf.get_rect(centerx=premetacog2_screen.get_width()/2, centery=0.7*premetacog2_screen.get_height())
+        premetacog2_text_conf_a=font.render(u'alto', 1, (20,20,20))
+        premetacog2_text_conf_b=font.render(u'bajo', 1, (20,20,20))
+        premetacog2_textpos_conf_a=premetacog2_text_conf_a.get_rect(centerx=self.screen.get_width()*(0.25+parameters.progress_width)+40, \
+                                                            centery=0.8*premetacog2_screen.get_height())
+        premetacog2_textpos_conf_b=premetacog2_text_conf_b.get_rect(centerx=self.screen.get_width()/4-40, \
+                                                            centery=0.8*premetacog2_screen.get_height())
+        premetacog2_screen.blit(premetacog2_text_conf, premetacog2_textpos_conf)
+        #premetacog2_screen.blit(premetacog2_text_conf_a, premetacog2_textpos_conf_a)        
+        #premetacog2_screen.blit(premetacog2_text_conf_b, premetacog2_textpos_conf_b)  
+
+        return premetacog_screen, premetacog2_screen
 
 
     def create_metacognitive_screen(self, report_type):
@@ -260,6 +288,9 @@ class GraphicalInterface():
         if report_type==0:
             return None
         elif report_type==1:
+            self.screen.blit(self.premetacog_screen, (0,0))
+            pygame.display.flip()
+            pygame.time.delay(800)
             self.screen.blit(self.metacognitive_screens[report_type], (0,0))
             pygame.display.flip()
             waiting=True
@@ -294,7 +325,10 @@ class GraphicalInterface():
             return report
 
         elif report_type==2:
-            self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+            self.screen.blit(self.premetacog_screen, (0,0))
+            pygame.display.flip()
+            pygame.time.delay(800)
+            self.screen.blit(self.metacognitive_screens[1], (0,0))
             pygame.display.flip()
             waiting_report=True
             while waiting_report:
@@ -318,14 +352,20 @@ class GraphicalInterface():
                             waiting_report=False
 
             if report==0:
-                temporary_report=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255), self.first_bandit)
+                temporary_report=pygame.draw.rect(self.metacognitive_screens[1], (255,255,255), self.first_bandit)
             elif report==1:
-                temporary_report=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255), self.second_bandit)
-            self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+                temporary_report=pygame.draw.rect(self.metacognitive_screens[1], (255,255,255), self.second_bandit)
+            self.screen.blit(self.metacognitive_screens[1], (0,0))
             pygame.display.flip()
             pygame.time.delay(200)
-            self.metacognitive_screens[report_type]=self.create_metacognitive_screen(report_type)
-            self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+            self.metacognitive_screens[1]=self.create_metacognitive_screen(1)
+            #self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+            #pygame.display.flip()
+
+            self.screen.blit(self.premetacog2_screen, (0,0))
+            pygame.display.flip()
+            pygame.time.delay(800)
+            self.screen.blit(self.metacognitive_screens[2], (0,0))
             pygame.display.flip()
 
             waiting_confidence=True

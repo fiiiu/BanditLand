@@ -21,17 +21,19 @@ class GraphicalInterface():
 
 
     def create_screens(self):
-        self.trial_screen=TrialScreen(self.bandits, self.progress_bar)
-        self.metacognitive_screen=MetacognitiveScreen(self.bandits, 1, self.first_question)
+        self.trial_screen=TrialScreen(self.dark_background, self.bandits, self.progress_bar)
+        self.metacognitive_screen=MetacognitiveScreen(self.light_background, self.bandits, 1, self.first_question)
 
     def create_visual_elements(self):
         window_rect=self.window.get_rect()
         #self.first_bandit, self.second_bandit
+        self.dark_background=BackgroundSprite(window_rect.size, (20,20,20))
+        self.light_background=BackgroundSprite(window_rect.size, (120,120,120))
         self.bandits=self.create_bandits()
         self.progress_bar=ProgressBar((window_rect.width*parameters.progress_width, window_rect.height*parameters.progress_height),\
                                         (window_rect.width*0.25, window_rect.height*0.125))
 
-        self.first_question=MessageSprite(u'¿Qué máquina paga más?', (int(window_rect.width*0.5), int(window_rect.height*0.2)))
+        self.first_question=MessageSprite((window_rect.width,60), (int(window_rect.width*0), int(window_rect.height*0.1)), u'¿Qué máquina paga más?')
 
 
 
@@ -81,10 +83,56 @@ class GraphicalInterface():
         #     self.blockend_screen=self.create_blockend_screen(played,won)
 
 
-    def show_metacognitive_screen(self, a):
-        self.metacognitive_screen.draw(self.window)
-        pygame.display.flip()
-        pygame.time.delay(1000)
+    def show_metacognitive_screen(self, report_type):
+        
+        #pygame.display.flip()
+        if report_type==0:
+            return None
+        elif report_type==1:
+            #self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+            self.metacognitive_screen.draw(self.window)
+            pygame.display.flip()
+            waiting=True
+            while waiting:
+                events = pygame.event.get()
+                for event in events:
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        if event.button == 1:
+                            pos = pygame.mouse.get_pos()
+                            if self.bandits[0].touched(pos):
+                                report=0
+                                waiting=False
+                            elif self.bandits[1].touched(pos):
+                                report=1
+                                waiting=False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_LEFT:
+                            report=0
+                            waiting=False
+                        if event.key == pygame.K_RIGHT:
+                            report=1
+                            waiting=False
+            
+            # if report==0:
+            #     #temporary_report=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255), self.first_bandit)
+            #     self.bandits[0].selected()
+            # elif report==1:
+            #     temporary_report=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255), self.second_bandit)
+            # self.screen.blit(self.metacognitive_screens[report_type], (0,0))
+            # pygame.display.flip()
+            # pygame.time.delay(200)
+            # self.metacognitive_screens[report_type]=self.create_metacognitive_screen(report_type)
+            # return report
+
+            self.bandits[report].selected()
+            self.metacognitive_screen.draw(self.window)
+            pygame.display.flip()
+            pygame.time.delay(200)
+            self.bandits[report].clear()
+            self.metacognitive_screen.draw(self.window)
+            pygame.display.flip()
+            #self.background.dirty=1
+            return report
 
 
     def show_choice_screen(self):
@@ -134,15 +182,15 @@ class GraphicalInterface():
 ### SCREENS
 
 class TrialScreen(pygame.sprite.LayeredDirty):
-    def __init__(self, bandits, progress_bar):
+    def __init__(self, background, bandits, progress_bar):
         pygame.sprite.LayeredDirty.__init__(self)
-        self.add(bandits, progress_bar)
+        self.add(background, bandits, progress_bar)
 
 class MetacognitiveScreen(pygame.sprite.LayeredDirty):
-    def __init__(self, bandits, metacog_type, messages):
+    def __init__(self, background, bandits, metacog_type, messages):
         pygame.sprite.LayeredDirty.__init__(self)
-        self.add(bandits)
-        self.add(messages)
+        self.add(background, bandits, messages)
+        
 
 
 
@@ -150,11 +198,26 @@ class MetacognitiveScreen(pygame.sprite.LayeredDirty):
 
 ### SPRITES
 
+class BackgroundSprite(pygame.sprite.DirtySprite):
+    def __init__(self, size, color):
+        pygame.sprite.DirtySprite.__init__(self)
+        self.image=pygame.Surface(size)
+        self.rect=pygame.Rect((0,0), size)
+        self.image.fill(color)
+        self.dirty=1
+
+
 class MessageSprite(pygame.sprite.DirtySprite):
 
-    def __init__(self, message, pos):
+    def __init__(self, size, pos, message):
+        pygame.sprite.DirtySprite.__init__(self)
+        self.image=pygame.Surface(size)
+        self.rect=pygame.Rect(pos, size)
+
         font=pygame.font.Font(None, 36)
-        self.text=font.render(message, 1, (20,20,20))
+        self.text=font.render(message, 1, (200,200,200))
+        textpos=self.text.get_rect(centerx=self.rect.centerx,centery=20)
+        self.image.blit(self.text, textpos)
         self.dirty=1
         #?#metacognitive_screen.blit(metacog_text, metacog_textpos) 
 
