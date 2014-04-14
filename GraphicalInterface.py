@@ -293,6 +293,7 @@ class GraphicalInterface():
             pygame.time.delay(800)
             self.screen.blit(self.metacognitive_screens[report_type], (0,0))
             pygame.display.flip()
+            pygame.event.clear()
             waiting=True
             while waiting:
                 events = pygame.event.get()
@@ -330,6 +331,7 @@ class GraphicalInterface():
             pygame.time.delay(800)
             self.screen.blit(self.metacognitive_screens[1], (0,0))
             pygame.display.flip()
+            pygame.event.clear()
             waiting_report=True
             while waiting_report:
                 events = pygame.event.get()
@@ -367,6 +369,7 @@ class GraphicalInterface():
             pygame.time.delay(800)
             self.screen.blit(self.metacognitive_screens[2], (0,0))
             pygame.display.flip()
+            pygame.event.clear()
 
             waiting_confidence=True
             displacement=0
