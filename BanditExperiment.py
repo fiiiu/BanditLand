@@ -1,4 +1,5 @@
 
+import ExperimentData
 import GraphicalInterface
 import BanditGame
 import playerFactory
@@ -19,6 +20,8 @@ class BanditExperiment():
         block_ordering=block_ordering
         self.alpha=alpha
         self.beta=beta
+
+        self.data=ExperimentData.ExperimentData(self.subject)
         
         #payrates
         if payrates is None:
@@ -44,6 +47,7 @@ class BanditExperiment():
         if graphical_interface:
             self.interface=GraphicalInterface.GraphicalInterface()
             
+
     def run(self, model=None):
         self.games=[]
         if model is not None:
@@ -88,26 +92,16 @@ class BanditExperiment():
             self.games[-1].play()
             self.interface.end_block()
 
+            self.games[-1].save("Output/{0}_{1}.txt".format(self.subject, i))
+            self.data.load_block(this_condition, these_payrates, self.games[-1].metacognitive_report)
+
     def report(self):
         for game in self.games:
             game.report()
 
     def save(self):
-        # save_array=numpy.zeros((self.n_blocks, 3+self.payrates.shape[1]), dtype=float)
-        # for i in range(self.n_blocks):
-        #     save_array[i][0]=i
-        #     save_array[i][1]=self.conditions[i]
-        #     save_array[i][2]=self.payrates[i]
-        #     save_array[i][3]=self.games[i].metacognitive_report
-        # numpy.savetxt("Output/{0}_REPORT.txt".format(self.subject),save_array, fmt='%d %d{0}'.format(' %f'*self.payrates.shape[1]))
+        self.data.save_file()
 
-        save_file=open("Output/{0}_REPORT.txt".format(self.subject),'w')
-        for i in range(self.n_blocks):
-            save_file.write("{0} {1} {2} {3}\n".format(i, self.conditions[i], self.payrates[i], self.games[i].metacognitive_report))
-        save_file.close()
-
-        for i,game in enumerate(self.games):
-            game.save("Output/{0}_{1}.txt".format(self.subject, range(self.n_blocks)[i]))
 
     def save_payrates(self):
         numpy.savetxt("Input/payrates_{0}Ban_{1}Blo_{2}Tri.txt".format(self.n_bandits, self.n_blocks, self.n_trials), self.payrates)
