@@ -51,3 +51,19 @@ class ExperimentData():
         elif condition==2:
             self.reports.append(report)
         self.is_loaded=True
+
+
+    def get_payrates(self, metacog_types):
+        payrates=[]
+        for block in range(self.n_blocks):
+            if self.conditions[block] in metacog_types:
+                payrates.append(self.payrates[block])
+        return payrates
+
+    def get_reports(self, metacog_types, report_part):
+        reports=[]
+        for block in range(self.n_blocks):
+            if self.conditions[block] in metacog_types:
+                reports.append(self.reports[block][report_part])
+        return reports
+
