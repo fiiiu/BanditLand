@@ -6,8 +6,9 @@ import BanditGame
 
 class ExperimentData():
 
-    def __init__(self, subject):
+    def __init__(self, subject, directory="Output/"):
         self.subject=subject
+        self.directory=directory
         self.n_blocks=0
         #self.raw_data=[]
         self.conditions=[]
@@ -16,7 +17,7 @@ class ExperimentData():
         self.is_loaded=False
 
     def load_file(self):
-        with open("Output/{0}_REPORT.txt".format(self.subject), 'r') as datafile:
+        with open(self.directory+"{0}_REPORT.txt".format(self.subject), 'r') as datafile:
             for line in datafile:
                 self.n_blocks+=1
                 data = line.split()
@@ -34,7 +35,7 @@ class ExperimentData():
 
     def save_file(self):
         if self.is_loaded:
-            save_file=open("Output/{0}_REPORT.txt".format(self.subject),'w')
+            save_file=open(self.directory+"{0}_REPORT.txt".format(self.subject),'w')
             for i in range(self.n_blocks):
                 save_file.write("{0} {1} {2} {3} {4} {5}\n".format(i, self.conditions[i], self.payrates[i][0], self.payrates[i][1],\
                                  self.reports[i][0], self.reports[i][1]))

@@ -24,7 +24,7 @@ def binned_average(pairs, nbins=10):
     
 
 
-def plot_and_correlate(self, x, y):
+def plot_and_correlate(x, y):
     rtest=stats.pearsonr(x, y)
     print "correlation r:{0}, p:{1}".format(rtest[0],rtest[1])
     plt.plot(x, y, 'o')
