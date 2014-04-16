@@ -55,12 +55,12 @@ class BanditExperiment():
             self.run_model(model)
         else:
             #if self.metacognition:
-                self.run_metacognition()
+            self.run_metacognition()
             #elif self.graphical_interface:
             #    self.run_graphical()
             #else:
             #    self.run_text()
-    
+
     def run_model(self, model):
         for i in range(self.n_blocks):
             self.games.append(BanditGame.BanditGame(p_list=self.payrates[i], n_trials=self.n_trials, player_choice=model))
@@ -91,9 +91,11 @@ class BanditExperiment():
             self.games[-1].player.set_interface(self.interface)
             self.games[-1].play()
             self.interface.end_block()
-
+            
             self.games[-1].save("Output/{0}_{1}.txt".format(self.subject, i))
             self.data.load_block(this_condition, these_payrates, self.games[-1].metacognitive_report)
+
+        self.interface.close()
 
     def report(self):
         for game in self.games:

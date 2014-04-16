@@ -447,4 +447,7 @@ class GraphicalInterface():
             self.blockend_screen=self.create_blockend_screen(played,won)
 
 
-        
+    def close(self):
+        pygame.quit()
+
+    
