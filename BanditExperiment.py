@@ -100,7 +100,7 @@ class BanditExperiment():
             game.report()
 
     def save(self):
-        self.data.save_file()
+        self.data.save_experiment_file()
 
 
     def save_payrates(self):

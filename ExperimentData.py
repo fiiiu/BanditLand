@@ -1,8 +1,8 @@
 
-
+import BanditGameData
 import BanditExperiment
 import BanditGame
-
+from collections import defaultdict
 
 class ExperimentData():
 
@@ -14,9 +14,22 @@ class ExperimentData():
         self.conditions=[]
         self.payrates=[]
         self.reports=[]
+        self.bandit_data=defaultdict(dict)
         self.is_loaded=False
 
-    def load_file(self):
+
+
+    def load_files(self):
+        self.load_experiment_file()
+        for block in range(self.n_blocks):
+            bgd=BanditGameData.BanditGameData(self.subject, self.directory)
+            bgd.load_file(block)
+            #self.bandit_data.append(bgd)
+            self.bandit_data[self.conditions[block]][self.payrates[block]]=bgd
+        self.is_loaded=True
+
+
+    def load_experiment_file(self):
         with open(self.directory+"{0}_REPORT.txt".format(self.subject), 'r') as datafile:
             for line in datafile:
                 self.n_blocks+=1
@@ -31,9 +44,8 @@ class ExperimentData():
                     self.reports.append((float(data[4]),None))
                 elif self.conditions[block]==2:
                     self.reports.append((float(data[4]),float(data[5])))
-        self.is_loaded=True
-
-    def save_file(self):
+        
+    def save_experiment_file(self):
         if self.is_loaded:
             save_file=open(self.directory+"{0}_REPORT.txt".format(self.subject),'w')
             for i in range(self.n_blocks):
