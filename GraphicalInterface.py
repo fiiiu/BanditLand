@@ -308,10 +308,10 @@ class GraphicalInterface():
                                 report=1
                                 waiting=False
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_LEFT:
+                        if event.key == pygame.K_DELETE: #LEFT:
                             report=0
                             waiting=False
-                        if event.key == pygame.K_RIGHT:
+                        if event.key == pygame.K_PAGEDOWN: #RIGHT:
                             report=1
                             waiting=False
             
@@ -346,10 +346,10 @@ class GraphicalInterface():
                                 report=1
                                 waiting_report=False
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_LEFT:
+                        if event.key == pygame.K_DELETE: #K_LEFT:
                             report=0
                             waiting_report=False
-                        if event.key == pygame.K_RIGHT:
+                        if event.key == pygame.K_PAGEDOWN: #RIGHT:
                             report=1
                             waiting_report=False
 
@@ -394,8 +394,10 @@ class GraphicalInterface():
                                 pygame.time.delay(200)
             
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                            displacement+=int(event.key==pygame.K_RIGHT)*2-1
+                        #if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                        if event.key == pygame.K_DELETE or event.key == pygame.K_PAGEDOWN:
+                            #displacement+=int(event.key==pygame.K_RIGHT)*2-1
+                            displacement+=int(event.key==pygame.K_PAGEDOWN)*2-1
                             if displacement > max_displacement:
                                 displacement-=1
                             if displacement < -max_displacement:
