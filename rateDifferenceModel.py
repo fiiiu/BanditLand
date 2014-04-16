@@ -3,12 +3,12 @@ import numpy as np
 import pymc
 
 
-def make_model(data):
+def make_model(data, subject_trials):
 
     #n_blocks=len(data0)
     n_blocks=data.shape[1]
-    n_trials_0=10
-    n_trials_1=10
+    n_trials_0=subject_trials/2
+    n_trials_1=subject_trials/2
 
     theta0=np.empty(n_blocks, dtype=object)
     theta1=np.empty(n_blocks, dtype=object)
