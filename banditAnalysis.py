@@ -16,8 +16,8 @@ import pymc
 
 
 # LOAD
-subject='pato'
-subject_trials=16
+subject='mati'
+subject_trials=20
 #directory='/Users/alejo/Neuro/CostOfTheories/Data/Mati/'
 directory='/home/alejo/Neuro/CostOfTheories/Data/'+subject+'/'
 data=ExperimentData.ExperimentData(subject, directory)
@@ -163,6 +163,16 @@ def block_analysis(model=False):
     print np.mean(normdif0), np.mean(normdif1)
 
 
+    collapsing=np.array(post_metacog_switches[0])-np.array(post_metacog_switches[1])
+    normcollapsing=normdif0-normdif1
+
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    Axes3D.scatter(ax, difficulties[0], generosities[0], collapsing, cmap=cm.jet)
+    Axes3D.plot_trisurf(ax, difficulties[0], generosities[0], collapsing, cmap=cm.jet)
+    plt.show()
+
+
 
     if model:
 
@@ -172,19 +182,7 @@ def block_analysis(model=False):
         #modeldata=np.array([normdif0,normdif1]) #this does not work, negative values.. should adapt model for negative reward triggering switch.
 
         model=pymc.MCMC(rateDifferenceModel.make_model(modeldata, subject_trials))
-        model.sample(iter=1000, burn=100, thin=10, progress_bar=False)
-
-        #theta0_m=np.mean(model.trace('theta0')[:],0)    
-        #theta1_m=np.mean(model.trace('theta1')[:],0)
-        #delta_m=np.mean(model.trace('delta')[:],0)
-        #delta_std=np.std(model.trace('delta')[:])
-        
-        #model.trace('delta')
-
-
-        # print '\nresults\n{0}, {1}\n dif: {2} +/- {3}'.format(theta0_m, theta1_m, delta_m, delta_std)
-        # deltas=model.trace('delta')[:]
-        # print 'aproximate pvalue from bayesian inference: {0}'.format(float(sum(deltas<0))/len(deltas))
+        model.sample(iter=10100, burn=100, thin=10, progress_bar=False)
 
         # p=0.057
         print 'pvalue from ttest: {0}'.format(stats.ttest_rel(post_metacog_switches[0],post_metacog_switches[1])[1])
@@ -194,23 +192,44 @@ def block_analysis(model=False):
         deltas=model.trace('delta')[:,:]
         mdeltas=np.mean(deltas,0)
         print 'supermean deltas: {0}'.format(np.mean(mdeltas))
-        
-        # p=0.058
-        print 'pvalue for deltas != 0 from ttest: {0}'.format(stats.ttest_1samp(mdeltas, 0))
 
-        plt.hist(np.mean(deltas,0))
+        alldeltas=deltas.reshape(deltas.shape[0]*deltas.shape[1])
+        print 'testing: {0}, {1}'.format(sum(alldeltas<0), len(alldeltas))
+        print 'aproximate pvalue from bayesian inference: {0}'.format(float(sum(alldeltas<0))/len(alldeltas))
+       
+        # p=0.058
+        print 'pvalue for deltas != 0 from ttest (taking mean): {0}'.format(stats.ttest_1samp(mdeltas, 0))
+        print 'pvalue for deltas != 0 from ttest (all together): {0}'.format(stats.ttest_1samp(alldeltas, 0))
+
+        print 'delta shape: {0}'.format(deltas.shape)
+        pvals=np.asfarray(np.sum(deltas<0,0))/deltas.shape[0]
+        print 'try something better? 16 p values: {0}'.format(pvals)
+
+        print np.where(pvals==pvals.min())
+        npgens0=np.array(generosities[0])
+        npgens1=np.array(generosities[1])
+        npdifs0=np.array(difficulties[0])
+        npdifs1=np.array(difficulties[1])
+
+        print 'most significant effect @G={0}, D={1}'.format(npgens0[pvals==pvals.min()],npdifs0[pvals==pvals.min()])
+        print 'just a check @G={0}, D={1}'.format(npgens1[pvals==pvals.min()],npdifs1[pvals==pvals.min()])
+
+        # plt.hist(np.mean(deltas,0))
+        # plt.show()
+
+        plt.hist(alldeltas)
         plt.show()
 
-        utils.plot_and_correlate(difficulties[0],mdeltas) 
-        utils.plot_and_correlate(difficulties[0],pre_metacog_switches[0])
-        utils.plot_and_correlate(difficulties[0],post_metacog_switches[0])
-        utils.plot_and_correlate(difficulties[0],post_metacog_switches[1])
-        utils.plot_and_correlate(generosities[0],mdeltas) 
-        utils.plot_and_correlate(generosities[0],pre_metacog_switches[0])
-        utils.plot_and_correlate(generosities[0],post_metacog_switches[0])
-        utils.plot_and_correlate(generosities[0],post_metacog_switches[1])
+        # utils.plot_and_correlate(difficulties[0],mdeltas) 
+        # utils.plot_and_correlate(difficulties[0],pre_metacog_switches[0])
+        # utils.plot_and_correlate(difficulties[0],post_metacog_switches[0])
+        # utils.plot_and_correlate(difficulties[0],post_metacog_switches[1])
+        # utils.plot_and_correlate(generosities[0],mdeltas) 
+        # utils.plot_and_correlate(generosities[0],pre_metacog_switches[0])
+        # utils.plot_and_correlate(generosities[0],post_metacog_switches[0])
+        # utils.plot_and_correlate(generosities[0],post_metacog_switches[1])
 
-        utils.plot_and_correlate(generosities[0], difficulties[0])
+        # utils.plot_and_correlate(generosities[0], difficulties[0])
         fig = plt.figure()
         ax = Axes3D(fig)
         Axes3D.scatter(ax, difficulties[0], generosities[0], mdeltas, cmap=cm.jet)
@@ -227,7 +246,7 @@ def main():
     # ANALYSES
     #global_analysis()
 
-    block_analysis(model=True)
+    block_analysis(model=False)
 
     
 

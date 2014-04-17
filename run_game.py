@@ -3,7 +3,7 @@
 import BanditGame
 import numpy
 
-n_optimal_realizations=100
+n_optimal_realizations=2
 
 bg=BanditGame.BanditGame()
 

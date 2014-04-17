@@ -16,6 +16,13 @@ class OptimalPlayer(BanditPlayer.BanditPlayer):
         self.maximizing_choice_table={}
 
 
+    def reset(self, full=False):
+        self.trials_played=0
+        if full:
+            self.expected_reward_table={}
+            self.maximizing_choice_table={}
+
+
     def choose(self):
         _, maximizing_choices=self.expected_reward(parameters.n_trials-self.trials_played, self.successes, self.failures)
         choice=numpy.random.choice(maximizing_choices)

@@ -24,9 +24,15 @@ class BanditGame(object):
 
     def reset(self, new_player_choice=None):
         if new_player_choice is not None:
-            self.player_choice=new_player_choice
+            #self.player_choice=new_player_choice
+            self.player_select(new_player_choice)
+        # reset player if optimal
+        elif self.player_choice==3:
+            self.player.reset() #partial reset, keep reward table for faster computation
         self.choices=[]
         self.rewards=[]
+
+
         
     def player_select(self, player_choice=None):
         if player_choice is None:
@@ -34,6 +40,7 @@ class BanditGame(object):
             print "{0} player selected.".format(playerFactory.player_type(self.player_choice))
         else:
             self.player_choice=player_choice
+        self.create_player(self.player_choice)
     
     def create_player(self, player_choice):
         self.player=playerFactory.create_player(player_choice)

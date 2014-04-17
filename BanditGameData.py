@@ -3,7 +3,7 @@
 
 class BanditGameData():
 
-    def __init__(self, subject, directory):
+    def __init__(self, subject=None, directory=None):
         self.subject=subject
         self.directory=directory
         self.choices=[]
@@ -20,6 +20,13 @@ class BanditGameData():
                 self.choices.append(int(data[1]))
                 self.rewards.append(int(data[2]))
 
+        self.n_trials=len(self.choices)
+        self.is_loaded=True
+
+
+    def load(self, choices, rewards):
+        self.choices=choices
+        self.rewards=rewards
         self.n_trials=len(self.choices)
         self.is_loaded=True
 
