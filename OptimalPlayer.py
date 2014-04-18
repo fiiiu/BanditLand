@@ -6,12 +6,13 @@ import parameters
 
 class OptimalPlayer(BanditPlayer.BanditPlayer):
 
-    def __init__(self, n_bandits=len(parameters.p_list)):
+    def __init__(self, n_bandits=len(parameters.p_list), n_trials=parameters.n_trials):
 
         super(OptimalPlayer, self).__init__(n_bandits)
         self.alpha=1
         self.beta=1
         self.trials_played=0
+        self.n_trials=n_trials
         self.expected_reward_table={}
         self.maximizing_choice_table={}
 
@@ -24,7 +25,7 @@ class OptimalPlayer(BanditPlayer.BanditPlayer):
 
 
     def choose(self):
-        _, maximizing_choices=self.expected_reward(parameters.n_trials-self.trials_played, self.successes, self.failures)
+        _, maximizing_choices=self.expected_reward(self.n_trials-self.trials_played, self.successes, self.failures)
         choice=numpy.random.choice(maximizing_choices)
         self.choices.append(choice)
         self.trials_played+=1

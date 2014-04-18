@@ -43,7 +43,7 @@ class BanditGame(object):
         self.create_player(self.player_choice)
     
     def create_player(self, player_choice):
-        self.player=playerFactory.create_player(player_choice)
+        self.player=playerFactory.create_player(player_choice, n_trials=self.n_trials)
 
     def play(self):
         if self.player_choice is None:

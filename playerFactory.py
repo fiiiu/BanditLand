@@ -7,7 +7,7 @@ import TextHumanPlayer
 import GraphicalHumanPlayer
 
         
-def create_player(player_choice):
+def create_player(player_choice, n_trials=None):
     if player_choice==-1:
         return GraphicalHumanPlayer.GraphicalHumanPlayer()
     elif player_choice==0:
@@ -17,7 +17,7 @@ def create_player(player_choice):
     elif player_choice==2:
         return SuccessRatePlayer.SuccessRatePlayer()
     elif player_choice==3:
-        return OptimalPlayer.OptimalPlayer()
+        return OptimalPlayer.OptimalPlayer(n_trials=n_trials)
 
 
 def player_type(player_choice):

@@ -4,7 +4,7 @@ import BanditExperiment
 
 
 # be=BanditExperiment.BanditExperiment('alejo', payrates='load')
-be=BanditExperiment.BanditExperiment('alejo')
+be=BanditExperiment.BanditExperiment('alejo', payrates='Input/payrates.txt')
 
 be.run()
 be.save() 

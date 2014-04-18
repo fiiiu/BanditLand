@@ -3,6 +3,7 @@ import gameAnalyzer
 import BanditGame
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from matplotlib.mlab import griddata
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import cPickle
@@ -12,15 +13,26 @@ payrates=[]
 difficulties=[]
 generosities=[]
 
-step=0.05
-for d in np.arange(0,1.01,step):
-    for g in np.arange(0,1.01,step):
-        if -d <= 2*g-1 <= d:
-            pa=(1-d)/2+g
-            pb=2*g-pa
-            payrates.append((pa,pb))
-            difficulties.append(d)
-            generosities.append(g)
+#step=0.14 for subjects
+step=0.06
+# for d in np.arange(0,1.001,step):
+#     for g in np.arange(0,1.001,step):
+#         if -d <= 2*g-1 <= d:
+#             pa=(1-d)/2+g
+#             pb=2*g-pa
+#             payrates.append((pa,pb))
+#             difficulties.append(d)
+#             generosities.append(g)
+
+for pa in np.arange(step,1.001, step):
+    for pb in np.arange(pa, 1.001, step):
+        g=(pa+pb)/2
+        d=1-abs(pb-pa)
+        payrates.append((pa,pb))
+        difficulties.append(d)
+        generosities.append(g)
+
+
 
 print payrates
 
@@ -28,6 +40,15 @@ pas=[ps[0] for ps in payrates]
 pbs=[ps[1] for ps in payrates]
 
 print len(payrates)
+
+save_payrates=False
+if save_payrates:
+    with open('Input/payrates.txt', 'w') as fhandle:
+        for payrate in payrates:
+            fhandle.write('{0} {1}\n'.format(payrate[0],payrate[1]))
+
+    exit()
+
 
 # fig = plt.figure()
 # ax = Axes3D(fig)
@@ -43,8 +64,12 @@ print len(payrates)
 # plt.show()
 
 
+#exit()
 
-n_realizations=20
+save=False
+plots=False
+
+n_realizations=16
 n_trials=20
 bgd=BanditGameData.BanditGameData()
 ave_switches=[]
@@ -61,7 +86,8 @@ for payrate in payrates:
         bgd.load(choices,rewards)
         n_switches.append(gameAnalyzer.metacog_switches(bgd, n_trials, post_metacog=True))
         bg.reset()
-        
+    
+    print n_switches
 
     ave_switches.append(np.mean(n_switches))
     std_switches.append(np.std(n_switches))
@@ -74,18 +100,39 @@ npave=np.array(ave_switches)
 npstd=np.array(std_switches)
 print npave[np.array(ave_switches)==np.max(ave_switches)], npstd[np.array(ave_switches)==np.max(ave_switches)]
 
-# fig = plt.figure()
-# ax = Axes3D(fig)
-# Axes3D.scatter(ax, difficulties, generosities, ave_switches, cmap=cm.jet)
-# Axes3D.plot_trisurf(ax, difficulties, generosities, ave_switches, cmap=cm.jet)
-# plt.show()
+
+if plots:
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    Axes3D.scatter(ax, difficulties, generosities, ave_switches, cmap=cm.jet)
+    Axes3D.plot_trisurf(ax, difficulties, generosities, ave_switches, cmap=cm.jet)
+
+
+
+    # griddata and contour.
+    xi = np.linspace(min(difficulties)+step,max(difficulties)-step,1.5/step)
+    yi = np.linspace(min(generosities)+step,max(generosities)-step,1.5/step)
+    zi = griddata(difficulties,generosities,ave_switches,xi,yi,interp='linear')
+
+
+    #plt.contour(xi,yi,zi,15,linewidths=0.5,colors='k')
+    plt.contourf(xi,yi,zi,cmap=cm.jet)#,
+                 #norm=plt.normalize(vmax=abs(zi).max(), vmin=-abs(zi).max()))
+    plt.colorbar() # draw colorba
+    plt.show()
+
+    plt.scatter(difficulties, generosities, marker='s', c=ave_switches, s=500, cmap=cm.coolwarm)
+    plt.colorbar()
+    plt.show()
+
 
 
 filename='Input/nswitches_optimal_{0}step_{1}trials_{2}reals.pkl'.format(step, n_trials, n_realizations)
 
 #write
-with open(filename, 'wb') as handle:
-  cPickle.dump([difficulties, generosities, ave_switches], handle)
+if save:
+    with open(filename, 'wb') as handle:
+      cPickle.dump([difficulties, generosities, ave_switches], handle)
 
 
 

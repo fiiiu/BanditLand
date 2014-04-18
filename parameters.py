@@ -1,7 +1,7 @@
 import numpy
 
 p_list=[0.35, 0.3]
-n_trials=20
+n_trials=4
 player_choice=None
 
 #Experiment parameters
@@ -10,7 +10,7 @@ block_ordering='random'
 include_conditions=[0,1,2]
 graphical_interface=True
 n_bandits=2
-blocks_per_condition=6
+blocks_per_condition=28
 #bandit probabilities hyperparameters
 experiment_alpha=1
 experiment_beta=1
