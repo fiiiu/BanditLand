@@ -29,9 +29,10 @@ class BanditExperiment():
             self.payrates=[numpy.random.beta(self.alpha, self.beta, n_bandits) for blo in range(blocks_per_condition)]
             #self.save_payrates()
         elif type(payrates) is str:
-            prepayrates=numpy.loadtxt(payrates)
+            preprepayrates=numpy.loadtxt(payrates)
+            prepayrates=[numpy.random.permutation(pay) for pay in preprepayrates]
             self.payrates=numpy.random.permutation(prepayrates)[0:blocks_per_condition]
-            print self.payrates
+            #print self.payrates
         #elif payrates=="load":
         #    self.payrates=numpy.loadtxt("Input/payrates_{0}Ban_{1}Blo_{2}Tri.txt".format(n_bandits, blocks_per_condition, n_trials))
         else:

@@ -14,7 +14,7 @@ difficulties=[]
 generosities=[]
 
 #step=0.14 for subjects
-step=0.06
+step=0.14
 # for d in np.arange(0,1.001,step):
 #     for g in np.arange(0,1.001,step):
 #         if -d <= 2*g-1 <= d:
@@ -66,10 +66,10 @@ if save_payrates:
 
 #exit()
 
-save=False
+save=True
 plots=False
 
-n_realizations=16
+n_realizations=15
 n_trials=20
 bgd=BanditGameData.BanditGameData()
 ave_switches=[]
