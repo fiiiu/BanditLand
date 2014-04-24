@@ -69,16 +69,23 @@ if save_payrates:
 save=True
 plots=False
 
+agent='optimal'
+agent='successrate'
 n_realizations=15
 n_trials=20
 bgd=BanditGameData.BanditGameData()
 ave_switches=[]
 std_switches=[]
 
+
 for payrate in payrates:
     print 'computing payrate {0}'.format(payrate)
     #bg=BanditGame.BanditGame(p_list=payrate, n_trials=n_trials, player_choice=3)
-    bg=BanditGame.BanditGame(p_list=payrate, n_trials=n_trials, player_choice=3)
+    if agent=='successrate':
+        pchoice=2
+    elif agent=='optimal':
+        pchoice=3
+    bg=BanditGame.BanditGame(p_list=payrate, n_trials=n_trials, player_choice=pchoice)
     n_switches=[]
         
     for i in range(n_realizations):
@@ -127,7 +134,7 @@ if plots:
 
 
 
-filename='Input/nswitches_optimal_{0}step_{1}trials_{2}reals.pkl'.format(step, n_trials, n_realizations)
+filename='Input/nswitches_{3}_{0}step_{1}trials_{2}reals.pkl'.format(step, n_trials, n_realizations, agent)
 
 #write
 if save:

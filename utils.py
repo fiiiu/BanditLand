@@ -28,4 +28,6 @@ def plot_and_correlate(x, y):
     rtest=stats.pearsonr(x, y)
     print "correlation r:{0}, p:{1}".format(rtest[0],rtest[1])
     plt.plot(x, y, 'o')
+    plt.xlim([0,1])
+    plt.ylim([0,1.01])
     plt.show()

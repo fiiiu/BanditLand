@@ -8,6 +8,7 @@ import utils
 import ExperimentData
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from matplotlib.mlab import griddata
 from mpl_toolkits.mplot3d import Axes3D
 from scipy import stats
 import numpy as np
@@ -61,7 +62,8 @@ def type2_perfo_plot_binned(addition=False):
     dif1,rep1=type2_perfo([1])
     dif2,rep2=type2_perfo([2])
     jitrep2=[0.96*repz+0.02 for repz in rep2]
-
+    print dif
+    print rep
     bave,bcenters,num=utils.binned_average(zip(dif,rep), nbins=6)
     print bave, bcenters, num
     plt.plot(bcenters, bave, 'k-s')
@@ -87,7 +89,7 @@ def confidence_plot(addition=False):
         if addition:
             dif.append(payrate[1]+payrate[0])
         else:
-            dif.append(abs(payrate[1]-payrate[0]))
+            dif.append(1-abs(payrate[1]-payrate[0]))
         rep.append(report)
 
 
@@ -106,9 +108,9 @@ def global_analysis():
 
     # EXPE WIDE ANALYSIS
     type2_perfo_plot() #o yea
-    type2_perfo_plot(True) # can't see, perfect score for mati!
+    #type2_perfo_plot(True) # can't see, perfect score for mati!
     confidence_plot() #corr
-    confidence_plot(True) #no corr
+    #confidence_plot(True) #no corr
     type2_perfo_plot_binned()
 
 
@@ -166,11 +168,44 @@ def block_analysis(model=False):
     collapsing=np.array(post_metacog_switches[0])-np.array(post_metacog_switches[1])
     normcollapsing=normdif0-normdif1
 
+    # p=0.057
+    print 'pvalue from ttest: {0}'.format(stats.ttest_rel(post_metacog_switches[0],post_metacog_switches[1])[1])
+    print 'same for rewards (pvalue from ttest): {0}'.format(stats.ttest_rel(post_met_swi_rews[0], post_met_swi_rews[1])[1])
+    print '...and subtracted: {0}'.format(stats.ttest_rel(normdif0, normdif1)[1])
+
+
     fig = plt.figure()
     ax = Axes3D(fig)
     Axes3D.scatter(ax, difficulties[0], generosities[0], collapsing, cmap=cm.jet)
     Axes3D.plot_trisurf(ax, difficulties[0], generosities[0], collapsing, cmap=cm.jet)
     plt.show()
+
+    # griddata and contour.     
+    xi = np.linspace(min(difficulties[0]),max(difficulties[0]),15)
+    yi = np.linspace(min(generosities[0]),max(generosities[0]),15)
+    xi = np.linspace(0,1,15)
+    yi = np.linspace(0,1,15)
+
+    print len(difficulties[0]), len(generosities[0]), len(collapsing)
+
+    zi = griddata(difficulties[0],generosities[0],collapsing,xi,yi,interp='nn')#linear')
+
+    #plt.contour(xi,yi,zi,15,linewidths=0.5,colors='k')
+    plt.contourf(xi,yi,zi,cmap=cm.jet)#,
+                 #norm=plt.normalize(vmax=abs(zi).max(), vmin=-abs(zi).max()))
+
+    plt.scatter(difficulties[0], generosities[0], marker='s', c=collapsing, s=200, cmap=cm.jet)
+    plt.colorbar() # draw colorba
+    plt.xlim([0,1])
+    plt.ylim([0,1])
+    plt.show()
+
+    # plt.scatter(difficulties[0], generosities[0], marker='s', c=collapsing, s=200, cmap=cm.coolwarm)
+    # plt.colorbar()
+    # plt.xlim([0,1])
+    # plt.ylim([0,1])
+    # plt.show()
+
 
 
 
@@ -184,10 +219,7 @@ def block_analysis(model=False):
         model=pymc.MCMC(rateDifferenceModel.make_model(modeldata, subject_trials))
         model.sample(iter=10100, burn=100, thin=10, progress_bar=False)
 
-        # p=0.057
-        print 'pvalue from ttest: {0}'.format(stats.ttest_rel(post_metacog_switches[0],post_metacog_switches[1])[1])
-        print 'same for rewards (pvalue from ttest): {0}'.format(stats.ttest_rel(post_met_swi_rews[0], post_met_swi_rews[1])[1])
-        print '...and subtracted: {0}'.format(stats.ttest_rel(normdif0, normdif1)[1])
+
         
         deltas=model.trace('delta')[:,:]
         mdeltas=np.mean(deltas,0)
@@ -204,6 +236,7 @@ def block_analysis(model=False):
         print 'delta shape: {0}'.format(deltas.shape)
         pvals=np.asfarray(np.sum(deltas<0,0))/deltas.shape[0]
         print 'try something better? 16 p values: {0}'.format(pvals)
+        print 'same, bonferroni corrected: {0}'.format(pvals*len(pvals))
 
         print np.where(pvals==pvals.min())
         npgens0=np.array(generosities[0])
@@ -237,7 +270,23 @@ def block_analysis(model=False):
         plt.show()
 
 
+        # griddata and contour.     
+        xi = np.linspace(min(difficulties[0]),max(difficulties[0]),15)
+        yi = np.linspace(min(generosities[0]),max(generosities[0]),15)
+        xi = np.linspace(0,1,15)
+        yi = np.linspace(0,1,15)
 
+        zi = griddata(difficulties[0],generosities[0],mdeltas,xi,yi,interp='nn')#linear')
+
+        #plt.contour(xi,yi,zi,15,linewidths=0.5,colors='k')
+        plt.contourf(xi,yi,zi,cmap=cm.jet)#,
+                     #norm=plt.normalize(vmax=abs(zi).max(), vmin=-abs(zi).max()))
+
+        plt.scatter(difficulties[0], generosities[0], marker='s', c=mdeltas, s=200, cmap=cm.jet)
+        plt.colorbar() # draw colorba
+        plt.xlim([0,1])
+        plt.ylim([0,1])
+        plt.show()
 
 
 def main():
@@ -246,7 +295,8 @@ def main():
     # ANALYSES
     #global_analysis()
 
-    block_analysis(model=False)
+    #block_analysis(model=False)   
+    block_analysis(model=True)
 
     
 

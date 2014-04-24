@@ -28,7 +28,7 @@ if new:
 	confidence_height=0.05
 	reward_size=0.1
 else:
-	fullscreen=True
+	fullscreen=False
 	bandit_width=0.08
 	bandit_height=0.18
 	progress_width=0.5
