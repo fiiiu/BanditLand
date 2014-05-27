@@ -99,9 +99,10 @@ class BanditExperiment():
             self.games.append(BanditGame.BanditGame(p_list=these_payrates, n_trials=self.n_trials, player_choice=-1, metacognition=this_condition))
             self.games[-1].player.set_interface(self.interface)
             self.games[-1].play()
-            #optimal_average_reward=self.games[-1].yoked_optimal_play()
-            self.interface.end_block()
+            actual_reward=sum(self.games[-1].rewards)
+            optimal_reward=self.games[-1].yoked_optimal_play()
             
+            self.interface.end_block(actual_reward, optimal_reward)
             self.games[-1].save("Output/{0}_{1}.txt".format(self.subject, i))
             self.data.load_block(this_condition, these_payrates, self.games[-1].metacognitive_report)
 
