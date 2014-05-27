@@ -202,15 +202,15 @@ class GraphicalInterface():
         return reward_screen
 
         
-    def create_blockend_screen(self, played, won, player_reward, optimal_reward):
+    def create_blockend_screen(self, player_reward, optimal_reward, accumulated_player_reward, accumulated_optimal_reward):
         blockend_screen=self.create_message_screen("Bloque terminado. Barra o click para continuar.")    
-        outline_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8, \
-                                 self.screen.get_width()*parameters.progress_width, \
-                                 self.screen.get_height()*parameters.progress_height)
+        #outline_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8, \
+        #                         self.screen.get_width()*parameters.progress_width, \
+        #                         self.screen.get_height()*parameters.progress_height)
 
-        trialnum_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
-                                  float(played)/self.n_trials*self.screen.get_width()*parameters.progress_width, \
-                                  self.screen.get_height()*parameters.progress_height)
+        #trialnum_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
+        #                          float(played)/self.n_trials*self.screen.get_width()*parameters.progress_width, \
+        #                          self.screen.get_height()*parameters.progress_height)
                 
         #progress_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
         #                          float(won)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
@@ -227,13 +227,30 @@ class GraphicalInterface():
                                   self.screen.get_width()*parameters.progress_width*float(optimal_reward)/self.n_trials, \
                                   self.screen.get_height()*parameters.progress_height)
 
-        self.outline=pygame.draw.rect(blockend_screen, (0,100,0), outline_rect)
-        self.trialnum=pygame.draw.rect(blockend_screen, (0,255,0), trialnum_rect)
+        #self.outline=pygame.draw.rect(blockend_screen, (0,100,0), outline_rect)
+        #self.trialnum=pygame.draw.rect(blockend_screen, (0,255,0), trialnum_rect)
         #self.progress=pygame.draw.rect(blockend_screen, (0,255,0), progress_rect)
         self.outline_perfo=pygame.draw.rect(blockend_screen, (40,40,40), perfo_rect)
         self.player_perfo=pygame.draw.rect(blockend_screen, (0,0,255), player_rect)
         self.optimal_perfo=pygame.draw.rect(blockend_screen, (0,0,100), optimal_rect)
-        
+
+        total_perfo_rect=pygame.Rect(self.screen.get_width()/4, 3*self.screen.get_height()/4, \
+                                 self.screen.get_width()*parameters.progress_width, \
+                                 self.screen.get_height()*parameters.progress_height*1.98)
+
+        total_player_rect=pygame.Rect(self.screen.get_width()/4, 3*self.screen.get_height()/4, \
+                                 self.screen.get_width()*parameters.progress_width*float(accumulated_player_reward)/self.n_trials, \
+                                 self.screen.get_height()*parameters.progress_height)
+
+        total_optimal_rect=pygame.Rect(self.screen.get_width()/4, 3*self.screen.get_height()/4+self.screen.get_height()*parameters.progress_height,\
+                                  self.screen.get_width()*parameters.progress_width*float(accumulated_optimal_reward)/self.n_trials, \
+                                  self.screen.get_height()*parameters.progress_height)
+
+        self.total_outline_perfo=pygame.draw.rect(blockend_screen, (40,40,40), total_perfo_rect)
+        self.total_player_perfo=pygame.draw.rect(blockend_screen, (255,0,0), total_player_rect)
+        self.total_optimal_perfo=pygame.draw.rect(blockend_screen, (100,0,0), total_optimal_rect)
+
+
         return blockend_screen
 
 
@@ -256,10 +273,10 @@ class GraphicalInterface():
                     if event.button == 1:
                         waiting=False
 
-    def end_block(self, player_reward, optimal_reward):
+    def end_block(self, player_reward, optimal_reward, accumulated_player_reward, accumulated_optimal_reward):
         played=self.blockend_played
         won=self.blockend_won
-        self.blockend_screen=self.create_blockend_screen(played, won, player_reward, optimal_reward)
+        self.blockend_screen=self.create_blockend_screen(player_reward, optimal_reward, accumulated_player_reward, accumulated_optimal_reward)
         self.screen.blit(self.blockend_screen, (0,0))
         pygame.display.flip()
 

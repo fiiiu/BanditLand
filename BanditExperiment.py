@@ -23,6 +23,9 @@ class BanditExperiment():
 
         self.data=ExperimentData.ExperimentData(self.subject)
         
+        self.accumulated_player_reward=0
+        self.accumulated_optimal_reward=0
+
         #payrates
         if payrates is None:
             #construct bandits' payrates
@@ -55,6 +58,8 @@ class BanditExperiment():
         if demo:
             self.conditions=[0,0,0,1,1,2,2]
             self.payrates=[[0.1,0.9],[0.8,0.65],[0.1,0.1],[0.9,0.1],[0.4,0.4],[0.1,0.9],[0.9,0.9]]
+            #self.conditions=[0,0]
+            #self.payrates=[[0.1,0.1],[0.1,0.1]]
             self.n_blocks=len(self.conditions)
 
     def run(self, model=None):
@@ -99,10 +104,14 @@ class BanditExperiment():
             self.games.append(BanditGame.BanditGame(p_list=these_payrates, n_trials=self.n_trials, player_choice=-1, metacognition=this_condition))
             self.games[-1].player.set_interface(self.interface)
             self.games[-1].play()
-            actual_reward=sum(self.games[-1].rewards)
+            player_reward=sum(self.games[-1].rewards)
             optimal_reward=self.games[-1].yoked_optimal_play()
-            
-            self.interface.end_block(actual_reward, optimal_reward)
+            self.accumulated_player_reward+=player_reward
+            self.accumulated_optimal_reward+=optimal_reward
+            #self.interface.end_block(player_reward, optimal_reward, \
+            #    float(self.accumulated_player_reward)/(i+1), float(self.accumulated_optimal_reward)/(i+1))
+            self.interface.end_block(player_reward, optimal_reward, \
+                float(self.accumulated_player_reward)/self.n_blocks, float(self.accumulated_optimal_reward)/self.n_blocks)
             self.games[-1].save("Output/{0}_{1}.txt".format(self.subject, i))
             self.data.load_block(this_condition, these_payrates, self.games[-1].metacognitive_report)
 
