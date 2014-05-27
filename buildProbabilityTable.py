@@ -14,7 +14,7 @@ difficulties=[]
 generosities=[]
 
 #step=0.14 for subjects
-step=0.14
+#step=0.14
 # for d in np.arange(0,1.001,step):
 #     for g in np.arange(0,1.001,step):
 #         if -d <= 2*g-1 <= d:
@@ -24,7 +24,11 @@ step=0.14
 #             difficulties.append(d)
 #             generosities.append(g)
 
-for pa in np.arange(step,1.001, step):
+nsteps=8
+step=1./nsteps
+
+
+for pa in np.arange(0,1.001, step):
     for pb in np.arange(pa, 1.001, step):
         g=(pa+pb)/2
         d=1-abs(pb-pa)
@@ -50,11 +54,11 @@ if save_payrates:
     exit()
 
 
-# fig = plt.figure()
-# ax = Axes3D(fig)
-# Axes3D.scatter(ax, pas, pbs, 1, cmap=cm.jet)
-# #Axes3D.plot_trisurf(ax, difficulties[0], generosities[0], mdeltas, cmap=cm.jet)
-# plt.show()
+#fig = plt.figure()
+#ax = Axes3D(fig)
+#Axes3D.scatter(ax, pas, pbs, 1, cmap=cm.jet)
+#Axes3D.plot_trisurf(ax, difficulties[0], generosities[0], 1, cmap=cm.jet)
+#plt.show()
 
 
 # fig = plt.figure()
@@ -66,8 +70,8 @@ if save_payrates:
 
 #exit()
 
-save=True
-plots=False
+save=False
+plots=True
 
 agent='optimal'
 agent='successrate'

@@ -87,3 +87,7 @@ class OptimalPlayer(BanditPlayer.BanditPlayer):
             self.failures[self.choices[-1]]+=1
 
 
+    def yoked_choose(self, successes, failures, trials_remaining):
+        _, maximizing_choices=self.expected_reward(trials_remaining, successes, failures)
+        choice=numpy.random.choice(maximizing_choices)
+        return choice

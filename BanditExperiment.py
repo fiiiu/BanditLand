@@ -11,7 +11,7 @@ class BanditExperiment():
     def __init__(self, subject, n_bandits=parameters.n_bandits, blocks_per_condition=parameters.blocks_per_condition, \
                  include_conditions=parameters.include_conditions, block_ordering=parameters.block_ordering, \
                  n_trials=parameters.n_trials, alpha=parameters.experiment_alpha, beta=parameters.experiment_beta, \
-                 graphical_interface=parameters.graphical_interface, payrates=None):#, metacognition=parameters.metacognition):
+                 graphical_interface=parameters.graphical_interface, payrates=None, demo=False):#, metacognition=parameters.metacognition):
         
         self.subject=subject
         self.n_bandits=n_bandits
@@ -50,8 +50,12 @@ class BanditExperiment():
         #graphical interface
         self.graphical_interface=graphical_interface
         if graphical_interface:
-            self.interface=GraphicalInterface.GraphicalInterface()
+            self.interface=GraphicalInterface.GraphicalInterface(self.n_trials)
             
+        if demo:
+            self.conditions=[0,0,0,1,1,2,2]
+            self.payrates=[[0.1,0.9],[0.8,0.65],[0.1,0.1],[0.9,0.1],[0.4,0.4],[0.1,0.9],[0.9,0.9]]
+            self.n_blocks=len(self.conditions)
 
     def run(self, model=None):
         self.games=[]
@@ -95,12 +99,15 @@ class BanditExperiment():
             self.games.append(BanditGame.BanditGame(p_list=these_payrates, n_trials=self.n_trials, player_choice=-1, metacognition=this_condition))
             self.games[-1].player.set_interface(self.interface)
             self.games[-1].play()
+            #optimal_average_reward=self.games[-1].yoked_optimal_play()
             self.interface.end_block()
             
             self.games[-1].save("Output/{0}_{1}.txt".format(self.subject, i))
             self.data.load_block(this_condition, these_payrates, self.games[-1].metacognitive_report)
 
         self.interface.close()
+
+
 
     def report(self):
         for game in self.games:

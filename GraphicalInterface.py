@@ -7,7 +7,8 @@ import parameters
 
 class GraphicalInterface():
 
-    def __init__(self):
+    def __init__(self, n_trials):
+        self.n_trials=n_trials
         pygame.init()
         if parameters.fullscreen:
             self.screen=pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -16,6 +17,7 @@ class GraphicalInterface():
             size=width, height=800, 600
             self.screen=pygame.display.set_mode(size)
         self.create_static_screens()
+        self.played=0
 
     
     def create_static_screens(self):
@@ -24,10 +26,12 @@ class GraphicalInterface():
         #self.blockend_screen=self.create_blockend_screen()
         self.trial_screen=self.create_trial_progress_screen(0,0)
         self.reward_screens=[]
-        for i in range(parameters.n_bandits):
+        for k in range(self.n_trials):
             self.reward_screens.append([])
-            for j in range(2):
-                self.reward_screens[i].append(self.create_reward_screen(i,j))
+            for i in range(parameters.n_bandits):
+                self.reward_screens[k].append([])
+                for j in range(2):
+                    self.reward_screens[k][i].append(self.create_reward_screen(i,j,k))
         self.metacognitive_screens={}
         #for condition in parameters.include_conditions:
         for condition in range(1,3):
@@ -86,8 +90,8 @@ class GraphicalInterface():
                                                                   (second_bandit_rect.right, second_bandit_rect.centery-10)])
         second_ball=pygame.draw.circle(trial_screen, (150,150,0), (second_bandit_rect.right+25, second_bandit_rect.top+10), 10)
 
-        self.first_bandit=pygame.draw.rect(trial_screen, (255,0,0), first_bandit_rect)
-        self.second_bandit=pygame.draw.rect(trial_screen, (0,0,255), second_bandit_rect)
+        self.first_bandit=pygame.draw.rect(trial_screen, (80,60,30), first_bandit_rect)
+        self.second_bandit=pygame.draw.rect(trial_screen, (80,60,30), second_bandit_rect)
         
         return trial_screen
 
@@ -100,18 +104,18 @@ class GraphicalInterface():
                                  self.screen.get_height()*parameters.progress_height)
 
         trialnum_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
-                                  float(played)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
+                                  float(played)/self.n_trials*self.screen.get_width()*parameters.progress_width, \
                                   self.screen.get_height()*parameters.progress_height)
                 
 
-        # SUCIO LEER ACA DE PARAMETERS N_TRIALS!!!!
-        progress_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
-                                  float(won)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
-                                  self.screen.get_height()*parameters.progress_height)
+        #progress_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
+        #                          float(won)/self.n_trials*self.screen.get_width()*parameters.progress_width, \
+        #                          self.screen.get_height()*parameters.progress_height)
                 
-        self.outline=pygame.draw.rect(trial_progress_screen, (40,40,40), outline_rect)
-        self.trialnum=pygame.draw.rect(trial_progress_screen, (0,100,0), trialnum_rect)
-        self.progress=pygame.draw.rect(trial_progress_screen, (0,255,0), progress_rect)
+        #self.outline=pygame.draw.rect(trial_progress_screen, (40,40,40), outline_rect)
+        self.outline=pygame.draw.rect(trial_progress_screen, (0,100,0), outline_rect)
+        self.trialnum=pygame.draw.rect(trial_progress_screen, (0,255,0), trialnum_rect)
+        #self.progress=pygame.draw.rect(trial_progress_screen, (0,255,0), progress_rect)
         
         return trial_progress_screen
 
@@ -173,12 +177,13 @@ class GraphicalInterface():
             confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
                                  self.screen.get_width()*parameters.progress_width, \
                                  self.screen.get_height()*parameters.confidence_height)
-            self.bar=pygame.draw.rect(metacognitive_screen, (80,0,80), confidence_bar)
+            self.bar=pygame.draw.rect(metacognitive_screen, (30,30,30), confidence_bar)
             return metacognitive_screen
 
 
-    def create_reward_screen(self, bandit, reward):
-        reward_screen=self.create_trial_screen()
+    def create_reward_screen(self, bandit, reward, played):
+        #reward_screen=self.create_trial_screen()
+        reward_screen=self.create_trial_progress_screen(played,0)
         if bandit==0:
             if reward==1:   
                 pygame.draw.circle(reward_screen, (255,255,0), (self.first_bandit.centerx, int(self.first_bandit.bottom-2*parameters.reward_size*self.screen.get_width())),\
@@ -204,21 +209,21 @@ class GraphicalInterface():
                                  self.screen.get_height()*parameters.progress_height)
 
         trialnum_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
-                                  float(played)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
+                                  float(played)/self.n_trials*self.screen.get_width()*parameters.progress_width, \
                                   self.screen.get_height()*parameters.progress_height)
                 
-        # SUCIO LEER ACA DE PARAMETERS N_TRIALS!!!!
-        progress_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
-                                  float(won)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
-                                  self.screen.get_height()*parameters.progress_height)
+        #progress_rect=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()/8,\
+        #                          float(won)/parameters.n_trials*self.screen.get_width()*parameters.progress_width, \
+        #                          self.screen.get_height()*parameters.progress_height)
                 
-        self.outline=pygame.draw.rect(blockend_screen, (40,40,40), outline_rect)
-        self.trialnum=pygame.draw.rect(blockend_screen, (0,100,0), trialnum_rect)
-        self.progress=pygame.draw.rect(blockend_screen, (0,255,0), progress_rect)
+        self.outline=pygame.draw.rect(blockend_screen, (0,100,0), outline_rect)
+        self.trialnum=pygame.draw.rect(blockend_screen, (0,255,0), trialnum_rect)
+        #self.progress=pygame.draw.rect(blockend_screen, (0,255,0), progress_rect)
         return blockend_screen
 
 
     def start_block(self, i):
+        self.played=0
         self.screen.blit(self.preblockstart_screen, (0,0))
         pygame.display.flip()
         pygame.time.delay(800)
@@ -280,7 +285,7 @@ class GraphicalInterface():
         return choice
 
     def show_feedback_screen(self, choice, reward):
-        self.screen.blit(self.reward_screens[choice][reward], (0,0))
+        self.screen.blit(self.reward_screens[self.played][choice][reward], (0,0))
         pygame.display.flip()
         pygame.time.delay(300)
                     
@@ -291,6 +296,8 @@ class GraphicalInterface():
             self.screen.blit(self.premetacog_screen, (0,0))
             pygame.display.flip()
             pygame.time.delay(800)
+            pygame.draw.rect(self.metacognitive_screens[1], (30,30,30), self.first_bandit)
+            pygame.draw.rect(self.metacognitive_screens[1], (30,30,30), self.second_bandit)
             self.screen.blit(self.metacognitive_screens[report_type], (0,0))
             pygame.display.flip()
             pygame.event.clear()
@@ -327,8 +334,11 @@ class GraphicalInterface():
 
         elif report_type==2:
             self.screen.blit(self.premetacog_screen, (0,0))
+            #pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255), self.first_bandit)
             pygame.display.flip()
             pygame.time.delay(800)
+            pygame.draw.rect(self.metacognitive_screens[1], (30,30,30), self.first_bandit)
+            pygame.draw.rect(self.metacognitive_screens[1], (30,30,30), self.second_bandit)
             self.screen.blit(self.metacognitive_screens[1], (0,0))
             pygame.display.flip()
             pygame.event.clear()
@@ -361,12 +371,13 @@ class GraphicalInterface():
             pygame.display.flip()
             pygame.time.delay(200)
             self.metacognitive_screens[1]=self.create_metacognitive_screen(1)
-            #self.screen.blit(self.metacognitive_screens[report_type], (0,0))
-            #pygame.display.flip()
-
+            pygame.draw.rect(self.premetacog2_screen, (30,30,30), self.first_bandit)
+            pygame.draw.rect(self.premetacog2_screen, (30,30,30), self.second_bandit)
             self.screen.blit(self.premetacog2_screen, (0,0))
             pygame.display.flip()
             pygame.time.delay(800)
+            pygame.draw.rect(self.metacognitive_screens[2], (30,30,30), self.first_bandit)
+            pygame.draw.rect(self.metacognitive_screens[2], (30,30,30), self.second_bandit)
             self.screen.blit(self.metacognitive_screens[2], (0,0))
             pygame.display.flip()
             pygame.event.clear()
@@ -386,8 +397,8 @@ class GraphicalInterface():
                                 confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
                                  self.screen.get_width()*parameters.progress_width, \
                                  self.screen.get_height()*parameters.confidence_height)
-                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
-                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (30,30,30), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (200,200,200),\
                                                   (pos[0]-5, self.bar.top, 10, self.bar.height))         
                                 self.screen.blit(self.metacognitive_screens[report_type], (0,0))
                                 pygame.display.flip()
@@ -408,8 +419,8 @@ class GraphicalInterface():
                                 confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
                                  self.screen.get_width()*parameters.progress_width, \
                                  self.screen.get_height()*parameters.confidence_height)
-                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
-                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (30,30,30), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (200,200,200),\
                                                   (self.bar.centerx-5+visual_displacement, self.bar.top, 5, self.bar.height))
                                 self.screen.blit(self.metacognitive_screens[report_type], (0,0))
                                 pygame.display.flip()
@@ -417,8 +428,8 @@ class GraphicalInterface():
                                 confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
                                  self.screen.get_width()*parameters.progress_width, \
                                  self.screen.get_height()*parameters.confidence_height)
-                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
-                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (30,30,30), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (200,200,200),\
                                                   (self.bar.centerx+visual_displacement, self.bar.top, 5, self.bar.height))
                                 self.screen.blit(self.metacognitive_screens[report_type], (0,0))
                                 pygame.display.flip()
@@ -426,8 +437,8 @@ class GraphicalInterface():
                                 confidence_bar=pygame.Rect(self.screen.get_width()/4, self.screen.get_height()*0.77, \
                                  self.screen.get_width()*parameters.progress_width, \
                                  self.screen.get_height()*parameters.confidence_height)
-                                pygame.draw.rect(self.metacognitive_screens[report_type], (80,0,80), confidence_bar)
-                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (255,255,255),\
+                                pygame.draw.rect(self.metacognitive_screens[report_type], (30,30,30), confidence_bar)
+                                temporary_confidence=pygame.draw.rect(self.metacognitive_screens[report_type], (200,200,200),\
                                                   (self.bar.centerx-5+visual_displacement, self.bar.top, 10, self.bar.height))
                                 self.screen.blit(self.metacognitive_screens[report_type], (0,0))
                                 pygame.display.flip()
@@ -441,7 +452,8 @@ class GraphicalInterface():
 
 
     def set_progress(self, played, won):
-        if played<parameters.n_trials:
+        self.played=played
+        if played<self.n_trials:
             self.trial_screen=self.create_trial_progress_screen(played, won)
         else:
             self.blockend_screen=self.create_blockend_screen(played,won)

@@ -1,16 +1,16 @@
 import numpy
 
 p_list=[0.35, 0.3]
-n_trials=4
+n_trials=16
 player_choice=None
 
 #Experiment parameters
 #metacognitive report: 'sorted' (0,1,2,3,..) for testing; 'random' for experiment, ..
-block_ordering='random'
+block_ordering='sorted'
 include_conditions=[0,1,2]
 graphical_interface=True
 n_bandits=2
-blocks_per_condition=28
+blocks_per_condition=2
 #bandit probabilities hyperparameters
 experiment_alpha=1
 experiment_beta=1
@@ -28,7 +28,7 @@ if new:
 	confidence_height=0.05
 	reward_size=0.1
 else:
-	fullscreen=False
+	fullscreen=True
 	bandit_width=0.08
 	bandit_height=0.18
 	progress_width=0.5

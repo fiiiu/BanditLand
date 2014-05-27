@@ -295,8 +295,8 @@ def main():
     # ANALYSES
     #global_analysis()
 
-    #block_analysis(model=False)   
-    block_analysis(model=True)
+    block_analysis(model=False)   
+    #block_analysis(model=True)
 
     
 
