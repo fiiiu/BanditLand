@@ -53,13 +53,13 @@ class BanditExperiment():
         #graphical interface
         self.graphical_interface=graphical_interface
         if graphical_interface:
-            self.interface=GraphicalInterface.GraphicalInterface(self.n_trials)
+            self.interface=GraphicalInterface.GraphicalInterface(self.n_trials, self.n_blocks)
             
         if demo:
             self.conditions=[0,0,0,1,1,2,2]
             self.payrates=[[0.1,0.9],[0.8,0.65],[0.1,0.1],[0.9,0.1],[0.4,0.4],[0.1,0.9],[0.9,0.9]]
-            #self.conditions=[0,0]
-            #self.payrates=[[0.1,0.1],[0.1,0.1]]
+            self.conditions=[0,0,0,0,0]
+            self.payrates=[[0.1,0.8],[0.8,0.1],[0.8,0.1],[0.8,0.1],[0.8,0.1]]
             self.n_blocks=len(self.conditions)
 
     def run(self, model=None):
@@ -105,18 +105,22 @@ class BanditExperiment():
             self.games[-1].player.set_interface(self.interface)
             self.games[-1].play()
             player_reward=sum(self.games[-1].rewards)
+            self.interface.preend_block()
+
             optimal_reward=self.games[-1].yoked_optimal_play()
             self.accumulated_player_reward+=player_reward
             self.accumulated_optimal_reward+=optimal_reward
             #self.interface.end_block(player_reward, optimal_reward, \
             #    float(self.accumulated_player_reward)/(i+1), float(self.accumulated_optimal_reward)/(i+1))
             self.interface.end_block(player_reward, optimal_reward, \
-                float(self.accumulated_player_reward)/self.n_blocks, float(self.accumulated_optimal_reward)/self.n_blocks)
+                float(self.accumulated_player_reward)/self.n_blocks, \
+                float(self.accumulated_optimal_reward)/self.n_blocks,\
+                i+1)
             self.games[-1].save("Output/{0}_{1}.txt".format(self.subject, i))
             self.data.load_block(this_condition, these_payrates, self.games[-1].metacognitive_report)
 
-        self.interface.close()
-
+        self.interface.end_experiment(self.accumulated_player_reward, self.accumulated_optimal_reward)
+        
 
 
     def report(self):

@@ -1,7 +1,7 @@
 import numpy
 
 p_list=[0.35, 0.3]
-n_trials=16
+n_trials=4#16
 player_choice=None
 
 #Experiment parameters
@@ -32,6 +32,7 @@ else:
 	bandit_width=0.08
 	bandit_height=0.18
 	progress_width=0.5
-	progress_height=0.02
+	#progress_height=0.02
+	progress_height=22
 	confidence_height=0.05
 	reward_size=0.015
