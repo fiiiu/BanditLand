@@ -1,9 +1,12 @@
 
-
+import sys
 import BanditExperiment
 
+if len(sys.argv)>1:
+    subject=sys.argv[1]
+else:
+    subject='jose'
 
-subject='test'
 
 be=BanditExperiment.BanditExperiment(subject=subject, payrates='Input/payrates.txt')
 

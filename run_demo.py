@@ -1,15 +1,13 @@
 
-
-import parameters
+import sys
 import BanditExperiment
 
-sub='prueba'
+if len(sys.argv)>1:
+    subject=sys.argv[1]
+else:
+    subject='jose'
 
-bedemo=BanditExperiment.BanditExperiment(subject=sub+'_demo', demo=True)
+bedemo=BanditExperiment.BanditExperiment(subject=subject+'_demo', demo=True)
 bedemo.run()
 bedemo.save() 
  
-#be.run(1)
-#be.save()
-
-#be.report()     

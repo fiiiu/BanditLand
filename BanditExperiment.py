@@ -50,17 +50,19 @@ class BanditExperiment():
         self.conditions=ordered_conditions[sort_order]
         self.payrates=expanded_payrates[sort_order]
 
+        #demo   
+        if demo:
+            self.conditions=[0,0,0,1,1,2,2]
+            self.payrates=[[0.1,0.9],[0.8,0.65],[0.1,0.1],[0.9,0.1],[0.4,0.4],[0.1,0.9],[0.9,0.9]]
+            #self.conditions=[0,0,0,0,0]
+            #self.payrates=[[0.1,0.8],[0.8,0.1],[0.8,0.1],[0.8,0.1],[0.8,0.1]]
+            self.n_blocks=len(self.conditions)
+
         #graphical interface
         self.graphical_interface=graphical_interface
         if graphical_interface:
             self.interface=GraphicalInterface.GraphicalInterface(self.n_trials, self.n_blocks)
-            
-        if demo:
-            self.conditions=[0,0,0,1,1,2,2]
-            self.payrates=[[0.1,0.9],[0.8,0.65],[0.1,0.1],[0.9,0.1],[0.4,0.4],[0.1,0.9],[0.9,0.9]]
-            self.conditions=[0,0,0,0,0]
-            self.payrates=[[0.1,0.8],[0.8,0.1],[0.8,0.1],[0.8,0.1],[0.8,0.1]]
-            self.n_blocks=len(self.conditions)
+        
 
     def run(self, model=None):
         self.games=[]
