@@ -249,7 +249,7 @@ class GraphicalInterface():
                                   parameters.progress_height)
         
         total_available_rect=pygame.Rect(self.screen.get_width()/4, 3*self.screen.get_height()/4+2*parameters.progress_height,\
-                                  self.screen.get_width()*parameters.progress_width*float(block_number)/(self.n_blocks+1), \
+                                  self.screen.get_width()*parameters.progress_width*float(block_number)/(self.n_blocks), \
                                   parameters.progress_height)
 
         self.total_outline_perfo=pygame.draw.rect(blockend_screen, (40,40,40), total_perfo_rect)
