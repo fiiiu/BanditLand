@@ -28,3 +28,16 @@ def metacog_rewards(bandit_game_data, n_trials, post_metacog=False):
 
 def n_rewards(bandit_game_data, from_trial, until_trial):
     return sum(bandit_game_data.rewards[from_trial:until_trial])
+
+
+def p_estimates_at_report(bandit_game_data, n_trials):
+    wins=[0,0]
+    plays=[0,0]
+    for i in range(n_trials/2):
+        wins[bandit_game_data.choices[i]]+=bandit_game_data.rewards[i]
+        plays[bandit_game_data.choices[i]]+=1
+    if plays[0]!=0 and plays[1]!=0:
+        return (float(wins[0])/plays[0],float(wins[1])/plays[1])    
+    else:
+        print 'cannot compute estimates, only one machine played. FAKING'
+        return (0.5,-1)

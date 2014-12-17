@@ -20,7 +20,7 @@ import pymc
 subject='mati'
 subject_trials=20
 #directory='/Users/alejo/Neuro/CostOfTheories/Data/Mati/'
-directory='/home/alejo/Neuro/CostOfTheories/Data/'+subject+'/'
+directory='/home/alejo/Neuro/CostOfTheories/Data/Round1/'+subject+'/'
 data=ExperimentData.ExperimentData(subject, directory)
 data.load_files()
 
