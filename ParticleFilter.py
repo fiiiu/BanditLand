@@ -34,12 +34,14 @@ class ParticleFilter(object):
             #self.weights[i,t]=self.weights[i,t-1]*self.likelihood.sample()
             #I keep the weights for saving instead of renormalizing, and here use 1/N:
             self.weights[i,t]=self.likelihood.value(y, self.ztilde[i,t]) #1./self.N*
+        self.weights[:,t]/=sum(self.weights[:,t])
+
 
     def selection_step(self, t):
         for i in range(self.N):
             #multinomial sampling
-            renormalized_weights=self.weights[:,t]/sum(self.weights[:,t])
-            self.z[i,t]=self.ztilde[np.where(np.random.multinomial(1, renormalized_weights))[0][0],t]
+            #renormalized_weights=self.weights[:,t]/sum(self.weights[:,t])
+            self.z[i,t]=self.ztilde[np.where(np.random.multinomial(1, self.weights[:,t]))[0][0],t]
                 
     def run(self, data):
         self.initialize()
@@ -50,6 +52,20 @@ class ParticleFilter(object):
             else:
                 for i in range(self.N):
                     self.z[i,t]=self.ztilde[i,t]
+
+    def run_ess(self, data):
+        resamples=0
+        self.initialize()
+        for t in range(1, self.T):
+            self.sample_step(t, data[t])
+            if 1./sum(self.weights[:,t]**2) < self.N*0.9:
+                self.selection_step(t)
+                resamples+=1
+            else:
+                for i in range(self.N):
+                    self.z[i,t]=self.ztilde[i,t] 
+        print resamples
+        print 1./sum(self.weights[:,13]**2)
 
     def show(self):
         print self.z, self.weights
