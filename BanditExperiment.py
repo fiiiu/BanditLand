@@ -12,7 +12,7 @@ class BanditExperiment():
                  include_conditions=parameters.include_conditions, block_ordering=parameters.block_ordering, \
                  n_trials=parameters.n_trials, alpha=parameters.experiment_alpha, beta=parameters.experiment_beta, \
                  graphical_interface=parameters.graphical_interface, payrates=None, demo=False):#, metacognition=parameters.metacognition):
-        
+
         self.subject=subject
         self.n_bandits=n_bandits
         self.n_blocks=blocks_per_condition*len(include_conditions)
@@ -22,7 +22,7 @@ class BanditExperiment():
         self.beta=beta
 
         self.data=ExperimentData.ExperimentData(self.subject)
-        
+
         self.accumulated_player_reward=0
         self.accumulated_optimal_reward=0
 
@@ -50,9 +50,9 @@ class BanditExperiment():
         self.conditions=ordered_conditions[sort_order]
         self.payrates=expanded_payrates[sort_order]
 
-        #demo   
+        #demo
         if demo:
-            self.conditions=[0,0,0,1,1,2,2]
+            self.conditions=[3,3,3,3,3,3]
             self.payrates=[[0.1,0.9],[0.8,0.65],[0.1,0.1],[0.9,0.1],[0.4,0.4],[0.1,0.9],[0.9,0.9]]
             #self.conditions=[0,0,0,0,0]
             #self.payrates=[[0.1,0.8],[0.8,0.1],[0.8,0.1],[0.8,0.1],[0.8,0.1]]
@@ -62,7 +62,7 @@ class BanditExperiment():
         self.graphical_interface=graphical_interface
         if graphical_interface:
             self.interface=GraphicalInterface.GraphicalInterface(self.n_trials, self.n_blocks)
-        
+
 
     def run(self, model=None):
         self.games=[]
@@ -81,7 +81,7 @@ class BanditExperiment():
         for i in range(self.n_blocks):
             self.games.append(BanditGame.BanditGame(p_list=self.payrates[i], n_trials=self.n_trials, player_choice=model))
             self.games[-1].play()
-            
+
     def run_text(self):
         for i in range(self.n_blocks):
             print "\nStarting block {0}...\n".format(i)
@@ -122,7 +122,7 @@ class BanditExperiment():
             self.data.load_block(this_condition, these_payrates, self.games[-1].metacognitive_report)
 
         self.interface.end_experiment(self.accumulated_player_reward, self.accumulated_optimal_reward)
-        
+
 
 
     def report(self):
