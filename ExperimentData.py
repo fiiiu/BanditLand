@@ -44,7 +44,7 @@ class ExperimentData():
                     self.reports.append((float(data[4]),None))
                 elif self.conditions[block]==2:
                     self.reports.append((float(data[4]),float(data[5])))
-        
+
     def save_experiment_file(self):
         if self.is_loaded:
             save_file=open(self.directory+"{0}_REPORT.txt".format(self.subject),'w')
@@ -63,6 +63,8 @@ class ExperimentData():
             self.reports.append((report, 'None'))
         elif condition==2:
             self.reports.append(report)
+        elif condition==3:
+            self.reports.append(report)
         self.is_loaded=True
 
 
@@ -79,4 +81,3 @@ class ExperimentData():
             if self.conditions[block] in metacog_types:
                 reports.append(self.reports[block][report_part])
         return reports
-
